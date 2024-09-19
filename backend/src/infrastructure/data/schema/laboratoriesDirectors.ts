@@ -1,5 +1,6 @@
-import { pgTable, uuid, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, boolean } from 'drizzle-orm/pg-core';
 import { laboratories } from './laboratories';
+
 
 export const directors = pgTable('directors', {
     id: uuid('id').defaultRandom().primaryKey(),
@@ -7,6 +8,6 @@ export const directors = pgTable('directors', {
     lastname: varchar('lastname', {length: 255}).notNull(),
     firstname: varchar('firstname', {length:255}).notNull(),
     phoneNumber: varchar('phoneNumber', {length: 20}).notNull(),
-    address: varchar('address', {length: 255}).notNull(),
+    hdr: boolean('hdr'),
     laboratory: uuid('laboratory').references(() => laboratories.id).notNull()
 })

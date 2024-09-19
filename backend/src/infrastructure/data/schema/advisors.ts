@@ -7,5 +7,6 @@ export const advisors = pgTable('advisors', {
     establishment: uuid('establishment').references(() => establishments.id).notNull(),
     department: varchar('department', { length: 255 }).notNull(),
     research_area: text('research_area').notNull(),
-    manager: varchar('manager', {length:255}).notNull()
+    ifrs: varchar('ifrs', {length:255}).notNull(),
+    costCenter: varchar('costCenter', {length:255}).notNull()
 });
