@@ -11,7 +11,7 @@ interface Inormalized {
     data?: string[] | object | null | IError[];
 }
 
-export const response = (res: Response, normalized: Inormalized): Response => {
+export const APIResponse = (res: Response, normalized: Inormalized): Response => {
     res.setHeader("X-powered-By", "MetaThesis");
     return res.status(normalized.statusCode).json(
         {
