@@ -32,9 +32,10 @@ export class UserService {
     /**
      * Récupère un utilisateur par son email
      * @param {string} email - L'email de l'utilisateur à rechercher
+     * @param {UserColumns} columns - Les colonnes à sélectionner
      * @returns {Promise<Partial<User | undefined>>} - Une promesse contenant l'utilisateur avec les colonnes spécifiées ou undefined
      */
-    getUserByEmail(email: string) {
+    getUserByEmail(email: string, columns: UserColumns) {
         return this.userRepository.getUserByEmail(email, {id: true, email: true, lastname: true, firstname: true});
     }
 
