@@ -1,5 +1,5 @@
 import { db } from "../data";
-import { User, InsertUser, UserColumns } from "../../domain/entities/User";
+import { User, NewUser, UserColumns } from "../../domain/entities/User";
 import { users } from "../data/schema";
 import { eq } from "drizzle-orm";
 
@@ -90,7 +90,7 @@ export class UserRepository {
      * @param {InsertUser} user - L'objet utilisateur à insérer
      * @returns {Promise<void>} - Une promesse indiquant que l'utilisateur a été créé
      */
-    createUser(user: InsertUser) { 
+    createUser(user: NewUser) { 
         try {
             return db.insert(users).values(user).execute();
         } catch(error) {

@@ -1,4 +1,4 @@
-import { InsertUser, User, UserColumns } from "../entities/User";
+import { NewUser, User, UserColumns } from "../entities/User";
 import { UserRepository } from "../../infrastructure/repositories/UserRepository";
 
 /**
@@ -53,7 +53,7 @@ export class UserService {
      * @param {InsertUser} user - Les données de l'utilisateur à insérer
      * @returns {void} - Aucune valeur de retour
      */
-    createUser(user: InsertUser): void {
+    createUser(user: NewUser): void {
         this.userRepository.createUser(user);
     }
 
