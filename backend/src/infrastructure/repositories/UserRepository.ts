@@ -92,7 +92,7 @@ export class UserRepository {
      */
     createUser(user: NewUser) { 
         try {
-            return db.insert(users).values(user).execute();
+            return db.insert(users).values(user).returning().then(([createdUser]) => createdUser);
         } catch(error) {
             console.error(error);
             throw new Error("An error occurred while creating user")

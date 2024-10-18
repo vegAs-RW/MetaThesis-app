@@ -9,7 +9,7 @@ export class UserService {
     private userRepository: UserRepository;
 
     constructor() {
-        this.userRepository =  new UserRepository;
+        this.userRepository =  new UserRepository();
     }
 
     /**
@@ -50,11 +50,11 @@ export class UserService {
 
     /**
      * Crée un nouvel utilisateur
-     * @param {InsertUser} user - Les données de l'utilisateur à insérer
+     * @param {NewUser} user - Les données de l'utilisateur à insérer
      * @returns {void} - Aucune valeur de retour
      */
-    createUser(user: NewUser): void {
-        this.userRepository.createUser(user);
+    async createUser(user: NewUser): Promise<NewUser> {
+        return this.userRepository.createUser(user);
     }
 
     /**

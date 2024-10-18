@@ -10,7 +10,7 @@ import bcrypt from "bcrypt";
 const userService = new UserService();
 const authService = new AuthService();
 
-
+// Maybe to delete, have an advisor register in AdvisorController
 export const register = async (req: Request, res: Response) => {
     try {
         const { email, password, firstname, lastname } = req.body;
