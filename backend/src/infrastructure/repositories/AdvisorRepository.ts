@@ -5,9 +5,10 @@ import { eq } from "drizzle-orm";
 
 export class AdvisorRepository {
 
-    createAdvisor(advisor: NewAdvisor) {
+    async createAdvisor(advisor: NewAdvisor) {
         try {
-            return db.insert(advisors).values(advisor).execute();;
+            const result = await db.insert(advisors).values(advisor).returning({id :advisors.id}).execute();
+            return result.length > 0 ? result[0] : undefined;;
         } catch (error) {
             console.error(error);
             throw new Error("An error occurred while creating advisor")
@@ -35,7 +36,7 @@ export class AdvisorRepository {
                     id: establishments.id,
                     name: establishments.name
                 },
-                users: {
+                user: {
                     email: users.email,
                     firstname: users.firstname,
                     lastname: users.lastname
@@ -64,37 +65,35 @@ export class AdvisorRepository {
     }
 
 
-    getAdvisorByEmail(email: string): Promise<Partial<Advisor | undefined>> {
+    getAdvisorByEmail(email: string, columns: AdvisorColumns) {
         try {
-            return db.query.advisors.findFirst({
-                columns: {
-                    id: true,
-                    department: true,
-                    research_area: true,
-                    ifrs: true,
-                    costCenter: true,
-                    establishment: true,
+            return db.select({
+                id: advisors.id,
+                department: advisors.department,
+                research_area: advisors.research_area,
+                ifrs: advisors.ifrs,
+                costCenter: advisors.costCenter,
+                establishment: {
+                    id: establishments.id,
+                    name: establishments.name
                 },
-                where: eq(users.email, email),
-                with: {
-                    user: {
-                        columns: {
-                            id: true,
-                            email: true,
-                            firstname: true,
-                            lastname: true
-                        }
-                    }
+                users: {
+                    email: users.email,
+                    firstname: users.firstname,
+                    lastname: users.lastname
                 }
-            });
-
+            }).from(advisors)
+            .leftJoin(establishments, eq(advisors.establishment, establishments.id))
+            .leftJoin(users, eq(advisors.id, users.id))
+            .where(eq(users.email, email))
+            .execute();
         } catch (error) {
             console.error(error);
             throw new Error("An error occurred while fetching advisor by email");
         }
     }
 
-    deletAdvisor(id: string) {
+    deleteAdvisor(id: string) {
         try {
             return db.delete(advisors).where(eq(advisors.id, id)).execute();
         } catch (error) {
