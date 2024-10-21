@@ -4,6 +4,7 @@ import {establishments} from "./establishments";
 import { laboratories } from "./laboratories";
 import {directors} from "./laboratoriesDirectors";
 import { theses } from "./thesis";
+import { candidates } from "./candidates";
 
 export {
     users,
@@ -11,5 +12,6 @@ export {
     establishments,
     laboratories,
     directors,
-    theses
+    theses,
+    candidates
 }
