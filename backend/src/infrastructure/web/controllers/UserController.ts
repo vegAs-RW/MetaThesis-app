@@ -11,7 +11,7 @@ const userService = new UserService();
 const authService = new AuthService();
 
 // Maybe to delete, have an advisor register in AdvisorController
-export const register = async (req: Request, res: Response) => {
+/*export const register = async (req: Request, res: Response) => {
     try {
         const { email, password, firstname, lastname } = req.body;
         if (!email.trim() || !password.trim() || typeof email !== "string" || typeof password !== "string") {
@@ -37,7 +37,7 @@ export const register = async (req: Request, res: Response) => {
         console.error(error);
         return APIResponse(res, { statusCode: 500, message: "An error occurred while creating user", data: null });
     }
-}
+}*/
 
 export const login = async (req: Request, res: Response) => {
     try {
