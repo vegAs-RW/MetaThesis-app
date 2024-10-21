@@ -3,6 +3,7 @@ import express from 'express';
 import authRoutes from './authRoutes';
 import userRoutes from './userRoutes';
 import laboratoryRoutes from './laboratoryRoutes';
+import establishmentRoutes from './establishmentRoutes';
 
 import { isAuth } from '../../../middlewares/authMiddleware';
 
@@ -13,5 +14,7 @@ router.use('/auth', authRoutes);
 router.use('/user', isAuth, userRoutes);
 
 router.use('/laboratory', isAuth, laboratoryRoutes);
+
+router.use('/establishment', isAuth, establishmentRoutes);
 
 export default router;
