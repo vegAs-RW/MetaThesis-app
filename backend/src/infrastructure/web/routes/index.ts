@@ -5,6 +5,7 @@ import userRoutes from './userRoutes';
 import laboratoryRoutes from './laboratoryRoutes';
 import establishmentRoutes from './establishmentRoutes';
 import labDirectorRoutes from './labDirectorRoutes';
+import candidateRoutes from './candidateRoutes';
 
 import { isAuth } from '../../../middlewares/authMiddleware';
 
@@ -19,5 +20,7 @@ router.use('/laboratory', isAuth, laboratoryRoutes);
 router.use('/establishment', isAuth, establishmentRoutes);
 
 router.use('/lab-director', isAuth, labDirectorRoutes);
+
+router.use('/candidate', isAuth, candidateRoutes);
 
 export default router;
