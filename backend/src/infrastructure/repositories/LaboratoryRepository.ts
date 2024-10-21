@@ -8,7 +8,8 @@ export class LaboratoryRepository {
         async createLaboratory(laboratory: NewLaboratory) {
             try {
                 const result = await db.insert(laboratories).values(laboratory).returning({id :laboratories.id}).execute();
-                return result.length > 0 ? result[0] : undefined;;
+                if (result.length === 0) throw new Error("An error occurred while creating laboratory");
+                return result[0];
             } catch (error) {
                 console.error(error);
                 throw new Error("An error occurred while creating laboratory")

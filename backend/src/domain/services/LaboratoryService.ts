@@ -1,15 +1,24 @@
 import { Laboratory, NewLaboratory, LaboratoryColumns } from "../entities/Laboratory";
 import { LaboratoryRepository } from "../../infrastructure/repositories/LaboratoryRepository";
-
+import { LabDirectorRepository } from "../../infrastructure/repositories/LabDirectorRepository";
+import { NewLabDirector } from "../entities/LabDirector";
 export class LaboratoryService {
     private laboratoryRepository: LaboratoryRepository;
+    private directorRepository: LabDirectorRepository;
 
     constructor() {
         this.laboratoryRepository = new LaboratoryRepository();
+        this.directorRepository = new LabDirectorRepository();
     }
 
-    async createLaboratory(laboratory: NewLaboratory){
+    async createLaboratory(laboratory: NewLaboratory, director: NewLabDirector){
        const newLaboratory = await this.laboratoryRepository.createLaboratory(laboratory);
+       
+       if (!newLaboratory) throw new Error("An error occurred while creating laboratory");
+       
+       director.laboratory = newLaboratory.id;
+       await this.directorRepository.createLabDirector(director);
+
        return newLaboratory;
     }
 

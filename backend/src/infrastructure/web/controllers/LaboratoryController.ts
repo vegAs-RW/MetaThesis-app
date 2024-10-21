@@ -1,25 +1,45 @@
 import { Request, Response } from "express";
 import { LaboratoryService } from "../../../domain/services/LaboratoryService";
+import { NewLabDirector } from "../../../domain/entities/LabDirector";
 import { NewLaboratory } from "../../../domain/entities/Laboratory";
 import { APIResponse } from "../../../utils/APIResponse";
 import { CustomRequest } from "../../../types/custom";
 
 const laboratoryService = new LaboratoryService();
 
-export const createLaboratory = async (req: Request, res: Response) => {
+export const createLaboratoryWithDirector = async (req: Request, res: Response) => {
     try {
-        const { name, address, city, country, means, expertise } = req.body;
+        const { name, address, city, country, means, expertise, directorEmail, directorFirstname, directorLastname, directorPhoneNumber, directorHdr } = req.body;
         if (!name.trim() || !address.trim() || !city.trim() || !country.trim() || !means.trim() || !expertise.trim()) {
             return APIResponse(res, {
                 statusCode: 400,
                 message: "Invalid laboratory details",
             });
         }
-        await laboratoryService.createLaboratory({ name, address, city, country, means, expertise });
+
+        if (!directorEmail.trim() || !directorFirstname.trim() || !directorLastname.trim() || !directorPhoneNumber.trim()) {
+            return APIResponse(res, {
+                statusCode: 400,
+                message: "Invalid director details",
+            });
+        }
+       
+        const newLaboratory: NewLaboratory = { name, address, city, country, means, expertise };
+        const newLabDirector: NewLabDirector = { email: directorEmail, firstname: directorFirstname, lastname: directorLastname, phoneNumber: directorPhoneNumber, hdr: directorHdr, laboratory: "" };
+        const createdLaboratory = await laboratoryService.createLaboratory(newLaboratory, newLabDirector);
         
+        if (!createdLaboratory) {
+            return APIResponse(res, {
+                statusCode: 500,
+                message: "Failed to create laboratory and director",
+            });
+        }
         APIResponse(res, {
             statusCode: 201,
-            message: "Laboratory created successfully",
+            message: "Laboratory and director created successfully",
+            data: {
+                laboratory: createdLaboratory,
+            }
         });
     } catch (error) {
         console.error(error);
