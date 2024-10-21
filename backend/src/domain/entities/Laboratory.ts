@@ -1,5 +1,5 @@
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
-import { laboratories } from "../../infrastructure/data/schema/laboratories";
+import { laboratories } from "../../infrastructure/data/schema";
 
 export type Laboratory = InferSelectModel<typeof laboratories>;
 
