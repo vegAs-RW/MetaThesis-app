@@ -7,3 +7,4 @@ export type NewLabDirector = InferInsertModel<typeof directors>;
 
 export type LabDirectorColumns = {[K in keyof LabDirector]?:boolean};
 
+export type LabDirectorWithLabInfo = LabDirector & {laboratoryInfo: {name: string, city: string, country: string, address: string, means: string, expertise: string} | null};
