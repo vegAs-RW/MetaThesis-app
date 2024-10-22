@@ -8,6 +8,6 @@ export const directors = pgTable('directors', {
     lastname: varchar('lastname', {length: 255}).notNull(),
     firstname: varchar('firstname', {length:255}).notNull(),
     phoneNumber: varchar('phoneNumber', {length: 20}).notNull(),
-    hdr: boolean('hdr'),
+    hdr: boolean('hdr').notNull(),
     laboratory: uuid('laboratory').references(() => laboratories.id).notNull()
 })
