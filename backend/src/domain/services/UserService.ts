@@ -16,8 +16,8 @@ export class UserService {
      * Récupère tous les utilisateurs
      * @returns {Promise<Partial<User>[]>} - Une promesse contenant une liste d'utilisateurs avec les colonnes spécifiées
      */
-    getAllUsers() {
-        return this.userRepository.getAllUsers();
+    async getAllUsers() {
+        return await this.userRepository.getAllUsers();
     }
 
     /**
@@ -25,8 +25,8 @@ export class UserService {
      * @param {string} id - L'identifiant de l'utilisateur à rechercher
      * @returns {Promise<Partial<User | undefined>>} - Une promesse contenant l'utilisateur avec les colonnes spécifiées ou undefined
      */
-    getUserById(id: string) {
-        return this.userRepository.getUserById(id, {id: true, email: true, lastname: true, firstname: true});
+    async getUserById(id: string) {
+        return await this.userRepository.getUserById(id, {id: true, email: true, lastname: true, firstname: true});
     }
 
     /**
@@ -35,8 +35,8 @@ export class UserService {
      * @param {UserColumns} columns - Les colonnes à sélectionner
      * @returns {Promise<Partial<User | undefined>>} - Une promesse contenant l'utilisateur avec les colonnes spécifiées ou undefined
      */
-    getUserByEmail(email: string, columns: UserColumns) {
-        return this.userRepository.getUserByEmail(email, {id: true, email: true, lastname: true, firstname: true});
+    async getUserByEmail(email: string, columns: UserColumns) {
+        return await this.userRepository.getUserByEmail(email, {id: true, email: true, lastname: true, firstname: true});
     }
 
     /**
@@ -44,8 +44,8 @@ export class UserService {
      * @param {string} lastname - Le nom de famille de l'utilisateur à rechercher
      * @returns {Promise<Partial<User | undefined>>} - Une promesse contenant l'utilisateur avec les colonnes spécifiées ou undefined
      */
-    getUserByLastname(lastname: string) {
-        return this.userRepository.getUserByLastname(lastname, {id: true, email: true, lastname: true, firstname: true});
+    async getUserByLastname(lastname: string) {
+        return await this.userRepository.getUserByLastname(lastname, {id: true, email: true, lastname: true, firstname: true});
     }
 
     /**
@@ -54,7 +54,7 @@ export class UserService {
      * @returns {void} - Aucune valeur de retour
      */
     async createUser(user: NewUser): Promise<NewUser> {
-        return this.userRepository.createUser(user);
+        return await this.userRepository.createUser(user);
     }
 
     /**
@@ -62,7 +62,7 @@ export class UserService {
      * @param {User} updatedUser - Les données de l'utilisateur à mettre à jour
      * @returns {void} - Aucune valeur de retour
      */
-    updateUser(updatedUser: User): void {
-        this.userRepository.updateUser(updatedUser);
+    async updateUser(updatedUser: User): Promise<void> {
+        await this.userRepository.updateUser(updatedUser);
     }
 }
