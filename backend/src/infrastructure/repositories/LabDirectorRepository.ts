@@ -1,6 +1,6 @@
 import { db } from "../data";
 import { directors, laboratories } from "../data/schema";
-import { LabDirector, NewLabDirector, LabDirectorColumns } from "../../domain/entities/LabDirector";
+import { LabDirector, NewLabDirector, LabDirectorColumns, LabDirectorWithLabInfo } from "../../domain/entities/LabDirector";
 import { eq } from "drizzle-orm";
 
 
@@ -25,16 +25,17 @@ export class LabDirectorRepository {
             }
         }
     
-        getAllLabDirectors() {
+        async getAllLabDirectors():Promise<LabDirectorWithLabInfo[]> {
             try {
-                return db.select({
+                const result = await db.select({
                     id: directors.id,
                     email: directors.email,
                     lastname: directors.lastname,
                     firstname: directors.firstname,
                     phoneNumber: directors.phoneNumber,
                     hdr: directors.hdr,
-                    laboratory: {
+                    laboratory: directors.laboratory,
+                    laboratoryInfo: {
                         name: laboratories.name,
                         city: laboratories.city,
                         country: laboratories.country,
@@ -45,6 +46,8 @@ export class LabDirectorRepository {
                 }).from(directors)
                 .leftJoin(laboratories, eq(directors.laboratory, laboratories.id))
                 .execute();
+
+                return result
             } catch (error) {
                 console.error(error);
                 throw new Error("An error occurred while fetching lab directors")

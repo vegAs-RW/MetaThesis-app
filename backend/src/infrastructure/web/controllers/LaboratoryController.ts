@@ -39,6 +39,14 @@ export const createLaboratoryWithDirector = async (req: Request, res: Response) 
             message: "Laboratory and director created successfully",
             data: {
                 laboratory: createdLaboratory,
+                director: {
+                    email: directorEmail,
+                    firstname: directorFirstname,
+                    lastname: directorLastname,
+                    phoneNumber: directorPhoneNumber,
+                    hdr: directorHdr,
+                    laboratory: createdLaboratory.id
+                }
             }
         });
     } catch (error) {
