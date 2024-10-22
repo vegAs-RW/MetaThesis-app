@@ -1,6 +1,5 @@
 import express from "express";
-import { login, logout } from "../controllers/UserController";
-import { registerAdvisor } from "../controllers/AdvisorController";
+import { registerAdvisor, login, logout } from "../controllers/AuthController";
 import { isAuth } from "../../../middlewares/authMiddleware";
 
 const router = express.Router();

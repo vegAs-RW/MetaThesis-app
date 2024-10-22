@@ -12,9 +12,9 @@ export class UserRepository {
      * Récupère tous les utilisateurs avec une sélection partielle des colonnes (id, email, lastname, firstname)
      * @returns {Promise<Partial<User>[]>} - Une promesse contenant une liste d'utilisateurs avec les colonnes spécifiées
      */
-    getAllUsers(): Promise<Partial<User>[]> {
+    async getAllUsers(): Promise<Partial<User>[]> {
         try {
-            return db.query.users.findMany({
+            return await db.query.users.findMany({
                 columns: {
                     id: true,
                     email: true,
@@ -90,9 +90,10 @@ export class UserRepository {
      * @param {InsertUser} user - L'objet utilisateur à insérer
      * @returns {Promise<void>} - Une promesse indiquant que l'utilisateur a été créé
      */
-    createUser(user: NewUser) { 
+    async createUser(user: NewUser): Promise<User> { 
         try {
-            return db.insert(users).values(user).returning().then(([createdUser]) => createdUser);
+            const [createdUser] = await db.insert(users).values(user).returning();
+            return createdUser;
         } catch(error) {
             console.error(error);
             throw new Error("An error occurred while creating user")
@@ -104,9 +105,12 @@ export class UserRepository {
      * @param {User} user - L'objet utilisateur avec les nouvelles données à mettre à jour
      * @returns {Promise<void>} - Une promesse indiquant que l'utilisateur a été mis à jour
      */
-    updateUser(user: User) {
+    async updateUser(user: Partial<User>): Promise<void> {
         try {
-            return db.update(users).set(user).where(eq(users.id, user.id)).execute();
+            await db.update(users)
+            .set(user)
+            .where(eq(users.id, user.id!))
+            .execute();
         } catch(error) {
             console.error(error);
             throw new Error("An error occurred while updating user")

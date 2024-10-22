@@ -16,7 +16,7 @@ router.use('/auth', authRoutes);
 
 router.use('/user', isAuth, userRoutes);
 
-router.use('/laboratory', isAuth, laboratoryRoutes);
+router.use('/laboratory', /*isAuth,*/ laboratoryRoutes);
 
 router.use('/establishment', isAuth, establishmentRoutes);
 
