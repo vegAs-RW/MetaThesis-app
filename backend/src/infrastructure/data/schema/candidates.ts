@@ -11,8 +11,8 @@ export const candidates = pgTable("candidates", {
     dateLastDegree: date("date_Last_Degree").notNull(),
     doctoralSchool: varchar("doctoral_school", { length: 255 }).notNull(),
     residentPermit: varchar("resident_permit", { length: 255 }).notNull(),
-    committeeValidation: boolean("committee_validation"),
-    hrValidation: boolean("hr_validation"),
-    zrrValidation: boolean("zrr_validation"),
+    committeeValidation: boolean("committee_validation").notNull(),  
+    hrValidation: boolean("hr_validation").notNull(),
+    zrrValidation: boolean("zrr_validation").notNull(),
     advisor: uuid("advisors").references(() => advisors.id).notNull(),
     });
