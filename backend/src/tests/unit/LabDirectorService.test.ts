@@ -16,7 +16,7 @@ describe('LabDirectorService', () => {
         firstname: 'John',
         phoneNumber: '123-456-7890',
         hdr: true,
-        laboratory: '1',  // Assurez-vous que ce champ corresponde à votre définition
+        laboratory: 'labID',  // Assurez-vous que ce champ corresponde à votre définition
     };
 
     const createdLabDirector: LabDirector = {
@@ -62,7 +62,7 @@ describe('LabDirectorService', () => {
             firstname: 'John',
             phoneNumber: '123-456-7890',
             hdr: false,
-            laboratory: '1',
+            laboratory: 'labID1',
             laboratoryInfo: {
                 name: 'Lab1',
                 city: 'City1',
@@ -80,7 +80,7 @@ describe('LabDirectorService', () => {
             firstname: 'John',
             phoneNumber: '123-456-7890',
             hdr: false,
-            laboratory: '1',
+            laboratory: 'labID',
             laboratoryInfo: {
                 name: 'Lab1',
                 city: 'City1',
@@ -105,14 +105,14 @@ describe('LabDirectorService', () => {
         // Mocking the repository method
         const labDirector: LabDirector = {
             id: '1',
-            email: 'director1@example.com',
+            email: 'director@example.com',
             lastname: 'Doe',
             firstname: 'John',
             phoneNumber: '123-456-7890',
             hdr: true, // ou false
-            laboratory: 'lab-id-1', // ID du labo
+            laboratory: 'labID', // ID du labo
         };
-        mockLabDirectorRepository.getLabDirectorById.mockResolvedValue([labDirector]);
+        mockLabDirectorRepository.getLabDirectorById.mockResolvedValue(labDirector);
 
         const result = await labDirectorService.getLabDirectorById('1', { id: true, email: true });
 
@@ -132,21 +132,21 @@ describe('LabDirectorService', () => {
 
     it('should get a lab director by lab id', async () => {
         // Mocking the repository method
-        mockLabDirectorRepository.getLabDirectorByLabId.mockResolvedValue([createdLabDirector]);
+        mockLabDirectorRepository.getLabDirectorByLabId.mockResolvedValue(createdLabDirector);
 
         const result = await labDirectorService.getLabDirectorByLabId('LabID', { id: true, email: true });
 
-        expect(result).toEqual([createdLabDirector]);
+        expect(result).toEqual(createdLabDirector);
         expect(mockLabDirectorRepository.getLabDirectorByLabId).toHaveBeenCalledWith('LabID', { id: true, email: true });
     });
 
     it('should get lab directors by laboratory', async () => {
         // Mocking the repository method
-        mockLabDirectorRepository.getLabDirectorByLaboratory.mockResolvedValue([createdLabDirector]);
+        mockLabDirectorRepository.getLabDirectorByLaboratory.mockResolvedValue(createdLabDirector);
 
         const result = await labDirectorService.getLabDirectorByLaboratory('LabID', { id: true, email: true });
 
-        expect(result).toEqual([createdLabDirector]);
+        expect(result).toEqual(createdLabDirector);
         expect(mockLabDirectorRepository.getLabDirectorByLaboratory).toHaveBeenCalledWith('LabID', { id: true, email: true });
     });
 });
