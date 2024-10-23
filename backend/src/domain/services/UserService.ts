@@ -2,65 +2,68 @@ import { NewUser, User, UserColumns } from "../entities/User";
 import { UserRepository } from "../../infrastructure/repositories/UserRepository";
 
 /**
- * Service qui gère la logique métier pour les utilisateurs.
- * Utilise le UserRepository pour interagir avec la base de données.
+ * Service class responsible for managing business logic related to users.
+ * Utilizes the UserRepository to interact with the database.
  */
 export class UserService {
     private userRepository: UserRepository;
 
+    /**
+     * Initializes the UserService and sets up the UserRepository.
+     */
     constructor() {
-        this.userRepository =  new UserRepository();
+        this.userRepository = new UserRepository();
     }
 
     /**
-     * Récupère tous les utilisateurs
-     * @returns {Promise<Partial<User>[]>} - Une promesse contenant une liste d'utilisateurs avec les colonnes spécifiées
+     * Retrieves all users from the database.
+     * @returns {Promise<Partial<User>[]>} - A promise containing a list of users with specified columns.
      */
     async getAllUsers() {
         return await this.userRepository.getAllUsers();
     }
 
     /**
-     * Récupère un utilisateur par son identifiant
-     * @param {string} id - L'identifiant de l'utilisateur à rechercher
-     * @returns {Promise<Partial<User | undefined>>} - Une promesse contenant l'utilisateur avec les colonnes spécifiées ou undefined
+     * Retrieves a user by their identifier.
+     * @param {string} id - The identifier of the user to search for.
+     * @returns {Promise<Partial<User | undefined>>} - A promise containing the user with specified columns or undefined if not found.
      */
     async getUserById(id: string) {
-        return await this.userRepository.getUserById(id, {id: true, email: true, lastname: true, firstname: true});
+        return await this.userRepository.getUserById(id, { id: true, email: true, lastname: true, firstname: true });
     }
 
     /**
-     * Récupère un utilisateur par son email
-     * @param {string} email - L'email de l'utilisateur à rechercher
-     * @param {UserColumns} columns - Les colonnes à sélectionner
-     * @returns {Promise<Partial<User | undefined>>} - Une promesse contenant l'utilisateur avec les colonnes spécifiées ou undefined
+     * Retrieves a user by their email address.
+     * @param {string} email - The email of the user to search for.
+     * @param {UserColumns} columns - The columns to select from the user entity.
+     * @returns {Promise<Partial<User | undefined>>} - A promise containing the user with specified columns or undefined if not found.
      */
     async getUserByEmail(email: string, columns: UserColumns) {
-        return await this.userRepository.getUserByEmail(email, {id: true, email: true, lastname: true, firstname: true});
+        return await this.userRepository.getUserByEmail(email, { id: true, email: true, lastname: true, firstname: true });
     }
 
     /**
-     * Récupère un utilisateur par son nom de famille
-     * @param {string} lastname - Le nom de famille de l'utilisateur à rechercher
-     * @returns {Promise<Partial<User | undefined>>} - Une promesse contenant l'utilisateur avec les colonnes spécifiées ou undefined
+     * Retrieves a user by their last name.
+     * @param {string} lastname - The last name of the user to search for.
+     * @returns {Promise<Partial<User | undefined>>} - A promise containing the user with specified columns or undefined if not found.
      */
     async getUserByLastname(lastname: string) {
-        return await this.userRepository.getUserByLastname(lastname, {id: true, email: true, lastname: true, firstname: true});
+        return await this.userRepository.getUserByLastname(lastname, { id: true, email: true, lastname: true, firstname: true });
     }
 
     /**
-     * Crée un nouvel utilisateur
-     * @param {NewUser} user - Les données de l'utilisateur à insérer
-     * @returns {void} - Aucune valeur de retour
+     * Creates a new user in the database.
+     * @param {NewUser} user - The data of the user to be inserted.
+     * @returns {Promise<NewUser>} - A promise that resolves to the newly created user object.
      */
     async createUser(user: NewUser): Promise<NewUser> {
         return await this.userRepository.createUser(user);
     }
 
     /**
-     * Met à jour un utilisateur
-     * @param {User} updatedUser - Les données de l'utilisateur à mettre à jour
-     * @returns {void} - Aucune valeur de retour
+     * Updates an existing user in the database.
+     * @param {User} updatedUser - The updated data of the user.
+     * @returns {Promise<void>} - A promise that resolves once the user has been updated.
      */
     async updateUser(updatedUser: User): Promise<void> {
         await this.userRepository.updateUser(updatedUser);
