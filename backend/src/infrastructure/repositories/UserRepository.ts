@@ -4,13 +4,14 @@ import { users } from "../data/schema";
 import { eq } from "drizzle-orm";
 
 /**
- * Repository qui gère le CRUD des utilisateurs
+ * Repository managing CRUD operations for users
  */
 export class UserRepository {
 
     /**
-     * Récupère tous les utilisateurs avec une sélection partielle des colonnes (id, email, lastname, firstname)
-     * @returns {Promise<Partial<User>[]>} - Une promesse contenant une liste d'utilisateurs avec les colonnes spécifiées
+     * Retrieves all users with a partial selection of columns (id, email, lastname, firstname)
+     * @returns {Promise<Partial<User>[]>} - A promise containing a list of users with the specified columns
+     * @throws {Error} - Throws an error if the retrieval fails
      */
     async getAllUsers(): Promise<Partial<User>[]> {
         try {
@@ -22,96 +23,101 @@ export class UserRepository {
                     firstname: true
                 }
             });
-        } catch(error) {
-        console.error(error);
-        throw new Error("An error occurred while fetching users")
+        } catch (error) {
+            console.error(error);
+            throw new Error("An error occurred while fetching users")
         }
     }
 
-    /**
-     * Récupère un utilisateur par son identifiant
-     * @param {string} id - L'identifiant de l'utilisateur à rechercher
-     * @param {UserColumns} columns - Les colonnes à sélectionner
-     * @returns {Promise<Partial<User | undefined>>} - Une promesse contenant l'utilisateur correspondant ou undefined
+   /**
+     * Retrieves a user by their ID
+     * @param {string} id - The ID of the user to find
+     * @param {UserColumns} columns - The columns to select
+     * @returns {Promise<Partial<User | undefined>>} - A promise containing the corresponding user or undefined
+     * @throws {Error} - Throws an error if the retrieval fails
      */
     getUserById(id: string, columns: UserColumns): Promise<Partial<User | undefined>> {
         try {
             return db.query.users.findFirst({
-                where: 
+                where:
                     eq(users.id, id),
                 columns
             });
-        } catch(error) {
+        } catch (error) {
             console.error(error);
             throw new Error("An error occurred while fetching user")
         }
     }
 
     /**
-     * Récupère un utilisateur par son email
-     * @param {string} email - L'email de l'utilisateur à rechercher
-     * @param {UserColumns} columns - Les colonnes à sélectionner
-     * @returns {Promise<Partial<User | undefined>>} - Une promesse contenant l'utilisateur correspondant ou undefined
+     * Retrieves a user by their email
+     * @param {string} email - The email of the user to find
+     * @param {UserColumns} columns - The columns to select
+     * @returns {Promise<Partial<User | undefined>>} - A promise containing the corresponding user or undefined
+     * @throws {Error} - Throws an error if the retrieval fails
      */
     getUserByEmail(email: string, columns: UserColumns): Promise<Partial<User | undefined>> {
         try {
             return db.query.users.findFirst({
-                where: 
+                where:
                     eq(users.email, email),
                 columns
             });
-        } catch(error) {
+        } catch (error) {
             console.error(error);
             throw new Error("An error occurred while fetching user")
         }
     }
 
      /**
-     * Récupère un utilisateur par son nom de famille (lastname)
-     * @param {string} lastname - Le nom de famille de l'utilisateur à rechercher
-     * @param {UserColumns} columns - Les colonnes à sélectionner
-     * @returns {Promise<Partial<User | undefined>>} - Une promesse contenant l'utilisateur correspondant ou undefined
+     * Retrieves a user by their last name (lastname)
+     * @param {string} lastname - The lastname of the user to find
+     * @param {UserColumns} columns - The columns to select
+     * @returns {Promise<Partial<User | undefined>>} - A promise containing the corresponding user or undefined
+     * @throws {Error} - Throws an error if the retrieval fails
      */
     getUserByLastname(lastname: string, columns: UserColumns): Promise<Partial<User | undefined>> {
         try {
             return db.query.users.findFirst({
-                where: 
+                where:
                     eq(users.lastname, lastname),
                 columns
             });
-        } catch(error) {
+        } catch (error) {
             console.error(error);
             throw new Error("An error occurred while fetching user")
         }
     }
 
     /**
-     * Crée un nouvel utilisateur dans la base de données
-     * @param {InsertUser} user - L'objet utilisateur à insérer
-     * @returns {Promise<void>} - Une promesse indiquant que l'utilisateur a été créé
+     * Creates a new user in the database
+     * @param {NewUser} user - The user object to insert
+     * @returns {Promise<User>} - A promise containing the created user
+     * @throws {Error} - Throws an error if the creation fails
      */
-    async createUser(user: NewUser): Promise<User> { 
+    async createUser(user: NewUser): Promise<User> {
         try {
             const [createdUser] = await db.insert(users).values(user).returning();
             return createdUser;
-        } catch(error) {
+        } catch (error) {
             console.error(error);
             throw new Error("An error occurred while creating user")
         }
     }
 
     /**
-     * Met à jour un utilisateur existant dans la base de données
-     * @param {User} user - L'objet utilisateur avec les nouvelles données à mettre à jour
-     * @returns {Promise<void>} - Une promesse indiquant que l'utilisateur a été mis à jour
+     * Updates an existing user in the database
+     * @param {Partial<User>} user - The user object with the updated data
+     * @returns {Promise<void>} - A promise indicating that the user has been updated
+     * @throws {Error} - Throws an error if the update fails
      */
     async updateUser(user: Partial<User>): Promise<void> {
         try {
             await db.update(users)
-            .set(user)
-            .where(eq(users.id, user.id!))
-            .execute();
-        } catch(error) {
+                .set(user)
+                .where(eq(users.id, user.id!))
+                .execute();
+        } catch (error) {
             console.error(error);
             throw new Error("An error occurred while updating user")
         }

@@ -3,8 +3,16 @@ import { advisors, establishments, users } from "../data/schema";
 import { Advisor, NewAdvisor, AdvisorColumns } from "../../domain/entities/Advisor";
 import { eq } from "drizzle-orm";
 
+/**
+ * Repository that manages CRUD operations for advisors
+ */
 export class AdvisorRepository {
 
+    /**
+     * Creates a new advisor in the database
+     * @param {NewAdvisor} advisor - The advisor data to create
+     * @returns {Promise<string | undefined>} - A promise containing the ID of the created advisor or undefined if not created
+     */
     async createAdvisor(advisor: NewAdvisor): Promise<string | undefined> {
         try {
             const result = await db.insert(advisors).values(advisor).returning({ id: advisors.id }).execute();
@@ -15,6 +23,12 @@ export class AdvisorRepository {
         }
     }
 
+    /**
+    * Updates an existing advisor in the database
+    * @param {Partial<Advisor>} advisor - The advisor data with updates
+    * @returns {Promise<void>} - A promise indicating that the advisor has been updated
+    * @throws {Error} - Throws an error if the advisor ID is not provided
+    */
     async updateAdvisor(advisor: Partial<Advisor>): Promise<void> {
         if (!advisor.id) throw new Error("Advisor id is required");
         try {
@@ -25,6 +39,10 @@ export class AdvisorRepository {
         }
     }
 
+    /**
+    * Retrieves all advisors from the database
+    * @returns {Promise<Advisor[]>} - A promise containing a list of all advisors
+    */
     async getAllAdvisors(): Promise<Advisor[]> {
         try {
             const result = await db.select({
@@ -52,6 +70,12 @@ export class AdvisorRepository {
         }
     }
 
+    /**
+    * Retrieves an advisor by their ID
+    * @param {string} id - The ID of the advisor to retrieve
+    * @param {AdvisorColumns} columns - The columns to select
+    * @returns {Promise<Partial<Advisor | undefined>>} - A promise containing the corresponding advisor or undefined
+    */
     async getAdvisorById(id: string, columns: AdvisorColumns): Promise<Partial<Advisor | undefined>> {
         try {
             const advisor = await db.query.advisors.findFirst({
@@ -66,7 +90,12 @@ export class AdvisorRepository {
         }
     }
 
-
+    /**
+    * Retrieves an advisor by their email address
+    * @param {string} email - The email of the advisor to retrieve
+    * @param {AdvisorColumns} columns - The columns to select
+    * @returns {Promise<Partial<Advisor | null>>} - A promise containing the corresponding advisor or null if not found
+    */
     async getAdvisorByEmail(email: string, columns: AdvisorColumns) {
         try {
             const advisor = await db.select({
@@ -76,10 +105,10 @@ export class AdvisorRepository {
                 ifrs: advisors.ifrs,
                 costCenter: advisors.costCenter,
                 establishment: advisors.establishment,
-                    email: users.email,
-                    firstname: users.firstname,
-                    lastname: users.lastname
-                
+                email: users.email,
+                firstname: users.firstname,
+                lastname: users.lastname
+
             }).from(advisors)
                 .leftJoin(establishments, eq(advisors.establishment, establishments.id))
                 .leftJoin(users, eq(advisors.id, users.id))
@@ -92,6 +121,11 @@ export class AdvisorRepository {
         }
     }
 
+    /**
+    * Deletes an advisor by their ID
+    * @param {string} id - The ID of the advisor to delete
+    * @returns {Promise<void>} - A promise indicating that the advisor has been deleted
+    */
     async deleteAdvisor(id: string): Promise<void> {
         try {
             await db.delete(advisors).where(eq(advisors.id, id)).execute();

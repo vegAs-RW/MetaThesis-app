@@ -3,9 +3,17 @@ import { theses, users, advisors, establishments, candidates } from "../data/sch
 import { Thesis, NewThesis, ThesisColumns, ThesisWithRelations } from "../../domain/entities/Thesis";
 import { eq, ilike } from "drizzle-orm";
 
-
+/**
+ * Repository that manages CRUD operations for theses
+ */
 export class ThesisRepository {
 
+    /**
+     * Creates an initial thesis in the database
+     * @param {Partial<NewThesis>} thesis - The thesis data to create
+     * @param {string} advisorId - The ID of the advisor associated with the thesis
+     * @returns {Promise<Thesis>} - A promise containing the created thesis
+     */
     async createInitialThesis(thesis: Partial<NewThesis>, advisorId: string) {
         try {
             if (!thesis.topic || !thesis.year || !thesis.domain || !thesis.scientistInterest || !thesis.keyword || !thesis.advisorId) {
@@ -35,6 +43,13 @@ export class ThesisRepository {
         }
     }
 
+    /**
+     * Validates the topic of a thesis
+     * @param {string} thesisId - The ID of the thesis to validate
+     * @param {boolean} isValid - Indicates if the topic is valid or not
+     * @param {string} [refusedTopic] - The refused topic if the subject is not valid
+     * @returns {Promise<{ rowsAffected: number }>} - A promise containing the result of the update
+     */
     async validateThesisTopic(thesisId: string, isValid: boolean, refusedTopic?: string) {
         try {
             const result = await db.update(theses)
@@ -51,6 +66,12 @@ export class ThesisRepository {
         }
     }
 
+    /**
+     * Updates the job vacancy associated with a thesis
+     * @param {string} thesisId - The ID of the thesis to update
+     * @param {string} vacancy - The new job vacancy to associate with the thesis
+     * @returns {Promise<void>} - A promise indicating that the vacancy has been updated
+     */
     async updateJobVacancy(thesisId: string, vacancy: string) {
         try {
             const result = await db.update(theses)
@@ -66,6 +87,12 @@ export class ThesisRepository {
         }
     }
 
+    /**
+     * Assigns a candidate to a thesis
+     * @param {string} thesisId - The ID of the thesis to which the candidate will be assigned
+     * @param {string} candidateId - The ID of the candidate to assign
+     * @returns {Promise<void>} - A promise indicating that the candidate has been assigned
+     */
     async assignCandidateToThesis(thesisId: string, candidateId: string) {
         try {
             const result = await db.update(theses)
@@ -81,6 +108,12 @@ export class ThesisRepository {
         }
     }
 
+    /**
+     * Adds an ANRT number to a thesis
+     * @param {string} thesisId - The ID of the thesis to update
+     * @param {string} anrtNumber - The ANRT number to associate with the thesis
+     * @returns {Promise<void>} - A promise indicating that the ANRT number has been added
+     */
     async addAnrtNumberToThesis(thesisId: string, anrtNumber: string) {
         try {
             const result = await db.update(theses)
@@ -96,6 +129,12 @@ export class ThesisRepository {
         }
     }
 
+    /**
+     * Retrieves all theses with optional columns and filters
+     * @param {ThesisColumns} columns - The columns to select
+     * @param {{keyword?: string, year?: number, domain?: string, topicValidation?: boolean}} filters - The search filters
+     * @returns {Promise<Thesis[]>} - A promise containing the list of theses matching the criteria
+     */
     async getAllTheses(columns: ThesisColumns, filters: {keyword?: string, year?: number, domain?: string, topicValidation?: boolean} = {}) {
         try {
             const query =  db.select({
@@ -145,6 +184,12 @@ export class ThesisRepository {
         }
     }
 
+    /**
+     * Retrieves a thesis by its ID
+     * @param {string} id - The ID of the thesis to retrieve
+     * @param {ThesisColumns} columns - The columns to select
+     * @returns {Promise<Partial<Thesis | undefined>>} - A promise containing the corresponding thesis or undefined
+     */
     getThesisById(id: string, columns: ThesisColumns) {
         try {
             return db.query.theses.findFirst({
