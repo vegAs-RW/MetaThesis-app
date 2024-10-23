@@ -1,9 +1,9 @@
 import request from "supertest";
 import express from "express";
 import { registerAdvisor, login, logout } from "../infrastructure/web/controllers/AuthController"; // Change le chemin
-import { UserService } from "../domain/services/UserService"; // Change le chemin
+import { UserService } from "../domain/services/UserService";
 import { AdvisorService } from "../domain/services/AdvisorService";
-import bcrypt from 'bcrypt' // Change le chemin
+import bcrypt from 'bcrypt'
 
 const app = express();
 app.use(express.json());
@@ -28,11 +28,11 @@ describe("AuthController", () => {
             UserServiceMock.prototype.getUserByEmail.mockResolvedValue(undefined); // Simule l'absence de l'utilisateur
             UserServiceMock.prototype.createUser.mockResolvedValue({
                 id: "1",
-                 email: "jane.doe@example.com", 
-                 firstname: "Jane", 
-                 lastname: "Doe", 
-                    password: "hashed-password"
-                });
+                email: "jane.doe@example.com",
+                firstname: "Jane",
+                lastname: "Doe",
+                password: "hashed-password"
+            });
             AdvisorServiceMock.prototype.createAdvisor.mockResolvedValue(undefined); // Simule la création de l'advisor
 
             const response = await request(app)

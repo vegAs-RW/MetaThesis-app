@@ -27,7 +27,6 @@ describe('UserService', () => {
         role: 'advisor' // Ajoutez un rôle ici pour éviter l'erreur
     };
 
-
     beforeAll(() => {
         mockUserRepository = new UserRepository() as jest.Mocked<UserRepository>;
         userService = new UserService();
