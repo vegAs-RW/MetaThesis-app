@@ -9,8 +9,9 @@ export class CandidateService {
     }
 
     async createCandidate(candidate: NewCandidate){
+        if (candidate?.firstname.trim().length < 1 || candidate?.lastname.trim().length < 1) return;
         const newCandidate = await this.candidateRepository.createCandidate(candidate);
-        return newCandidate;
+        return newCandidate[0].id;
     }
 
     updateCandidate(candidate: Candidate): void {
@@ -21,15 +22,18 @@ export class CandidateService {
         return this.candidateRepository.getAllCandidates();
     }
 
-    getCandidateById(id: string, columns: CandidateColumns) {
-        return this.candidateRepository.getCandidateById(id, columns || {id: true, firstname: true, lastname: true, birthdate: true, lastDegree: true, dateLastDegree: true, doctoralSchool: true, residentPermit: true, committeeValidation: true, hrValidation: true, zrrValidation: true, advisor: {id: true, department: true, research_area: true, ifrs: true, costCenter: true}});
+    getCandidateById(id: string) {
+        if (!id || id.trim().length < 1) return;
+        return this.candidateRepository.getCandidateById(id);
     }
 
-    getCandidateByAdvisor(advisor: string, columns: CandidateColumns) {
-        return this.candidateRepository.getCandidateByAdvisor(advisor, columns || {id: true, firstname: true, lastname: true, birthdate: true, lastDegree: true, dateLastDegree: true, doctoralSchool: true, residentPermit: true, committeeValidation: true, hrValidation: true, zrrValidation: true, advisor: {id: true, department: true, research_area: true, ifrs: true, costCenter: true}});
+    getCandidatesByAdvisor(advisor: string) {
+        if (!advisor || advisor.trim().length < 1) return;
+        return this.candidateRepository.getCandidatesByAdvisor(advisor);
     }
 
     deleteCandidate(id: string): void {
+        if (!id || id.trim().length < 1) return;
         this.candidateRepository.deleteCandidate(id);
     }
 }

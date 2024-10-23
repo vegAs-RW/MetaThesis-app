@@ -1,14 +1,16 @@
 import { db } from "../data";
 import { candidates, advisors } from "../data/schema";
-import { Candidate, NewCandidate, CandidateColumns } from "../../domain/entities/Candidate";
+import { Candidate, NewCandidate, CandidateColumns, CandidateWithAdvisor } from "../../domain/entities/Candidate";
 import { eq } from "drizzle-orm";
 
 export class CandidateRepository {
 
-    async createCandidate(candidate: NewCandidate) {
+    async createCandidate(newCandidate: NewCandidate) {
         try {
-            const result = await db.insert(candidates).values(candidate).returning({ id: candidates.id }).execute();
-            return result.length > 0 ? result[0] : undefined;;
+            return await db.insert(candidates).values(newCandidate)
+            .returning({ id: candidates.id })
+            .execute();
+            
         } catch (error) {
             console.error(error);
             throw new Error("An error occurred while creating candidate")
@@ -24,7 +26,38 @@ export class CandidateRepository {
         }
     }
 
-    getAllCandidates() {
+    getAllCandidates(): Promise<CandidateWithAdvisor[]> {
+        try {
+            return db.select({
+                id: candidates.id,
+                firstname: candidates.firstname,
+                lastname: candidates.lastname,
+                birthdate: candidates.birthdate,
+                lastDegree: candidates.lastDegree,
+                dateLastDegree: candidates.dateLastDegree,
+                doctoralSchool: candidates.doctoralSchool,
+                residentPermit: candidates.residentPermit,
+                committeeValidation: candidates.committeeValidation,
+                hrValidation: candidates.hrValidation,
+                zrrValidation: candidates.zrrValidation,
+                advisor: candidates.advisor,
+                advisorInfo: {
+                    id: advisors.id,
+                    department: advisors.department,
+                    research_area: advisors.research_area,
+                    ifrs: advisors.ifrs,
+                    costCenter: advisors.costCenter
+                }
+            }).from(candidates)
+                .leftJoin(advisors, eq(candidates.advisor, advisors.id))
+                .execute();
+        } catch (error) {
+            console.error(error);
+            throw new Error("An error occurred while fetching candidates")
+        }
+    }
+
+    getCandidateById(id: string): Promise<any> {
         try {
             return db.select({
                 id: candidates.id,
@@ -47,38 +80,47 @@ export class CandidateRepository {
                 }
             }).from(candidates)
                 .leftJoin(advisors, eq(candidates.advisor, advisors.id))
+                .where(eq(candidates.id, id))
                 .execute();
         } catch (error) {
             console.error(error);
-            throw new Error("An error occurred while fetching candidates")
-        }
-    }
-
-    getCandidateById(id: string, columns: CandidateColumns): Promise<Partial<Candidate | undefined>> {
-        try {
-            return db.query.candidates.findFirst({
-                where:
-                    eq(candidates.id, id),
-                columns
-            });
-        } catch (error) {
-            console.error(error);
             throw new Error("An error occurred while fetching candidate")
         }
     }
 
-    getCandidateByAdvisor(advisor: string, columns: CandidateColumns): Promise<Partial<Candidate | undefined>> {
+    getCandidatesByAdvisor(advisorId: string): Promise<CandidateWithAdvisor[]> {
         try {
-            return db.query.candidates.findFirst({
-                where:
-                    eq(candidates.advisor, advisor),
-                columns
-            });
+            return db.select({
+                id: candidates.id,
+                firstname: candidates.firstname,
+                lastname: candidates.lastname,
+                birthdate: candidates.birthdate,
+                lastDegree: candidates.lastDegree,
+                dateLastDegree: candidates.dateLastDegree,
+                doctoralSchool: candidates.doctoralSchool,
+                residentPermit: candidates.residentPermit,
+                committeeValidation: candidates.committeeValidation,
+                hrValidation: candidates.hrValidation,
+                zrrValidation: candidates.zrrValidation,
+                advisor: candidates.advisor,
+                advisorInfo: {
+                    id: advisors.id,
+                    department: advisors.department,
+                    research_area: advisors.research_area,
+                    ifrs: advisors.ifrs,
+                    costCenter: advisors.costCenter
+                }
+            }).from(candidates)
+                .leftJoin(advisors, eq(candidates.advisor, advisors.id))
+                .where(eq(candidates.advisor, advisorId))
+                .execute();
         } catch (error) {
             console.error(error);
-            throw new Error("An error occurred while fetching candidate")
+            throw new Error("An error occurred while fetching candidates");
         }
     }
+    
+    
 
     deleteCandidate(id: string) {
         try {
