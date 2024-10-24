@@ -33,7 +33,7 @@ export const registerAdvisor = async (req: Request, res: Response) => {
         const hashedPassword = await bcrypt.hash(password, 12);
 
         // Creating a new user in the system
-        const newUser = await userService.createUser({ email, password: hashedPassword, lastname, firstname });
+        const newUser = await userService.createUser({ email, password: hashedPassword, lastname, firstname, role: "advisor" });
 
         // Handling the case where user creation fails
         if (!newUser || !newUser.id) {
@@ -114,7 +114,7 @@ export const login = async (req: Request, res: Response) => {
         APIResponse(res, {
             statusCode: 200,
             message: "Login successful",
-            data: { token }
+            data: { token: token, role: user.role }
         });
 
     } catch (error) {

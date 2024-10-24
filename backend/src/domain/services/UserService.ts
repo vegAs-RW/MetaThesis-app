@@ -38,8 +38,8 @@ export class UserService {
      * @param {UserColumns} columns - The columns to select from the user entity.
      * @returns {Promise<Partial<User | undefined>>} - A promise containing the user with specified columns or undefined if not found.
      */
-    async getUserByEmail(email: string, columns: UserColumns) {
-        return await this.userRepository.getUserByEmail(email, { id: true, email: true, lastname: true, firstname: true });
+    async getUserByEmail(email: string, columns: UserColumns):Promise<Partial<User | undefined>> {
+        return await this.userRepository.getUserByEmail(email, { id: true, email: true, lastname: true, firstname: true, password: true, role: true });
     }
 
     /**

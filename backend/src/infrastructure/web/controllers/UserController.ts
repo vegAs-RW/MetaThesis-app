@@ -62,3 +62,28 @@ export const updateUser = async (req: CustomRequest, res: Response) => {
         APIResponse(res, { statusCode: 500, message: "An error occurred while updating user" });
     }
 }
+
+/*export const createUserAdmin = async (req: Request, res: Response) => {
+    try {
+        const { email, password, lastname, firstname } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 12);
+
+        const newUser = await userService.createUser({ email, password: hashedPassword, lastname, firstname, role: "admin" });
+
+        if (!newUser || !newUser.id) {
+            return APIResponse(res, {
+                statusCode: 500,
+                message: "Failed to create user",
+            });
+        }
+
+        APIResponse(res, {
+            statusCode: 201,
+            message: "User created successfully",
+        });
+
+    } catch (error) {
+        console.error(error);
+        return APIResponse(res, { statusCode: 500, message: "An error occurred while creating user" });
+    }
+}*/
