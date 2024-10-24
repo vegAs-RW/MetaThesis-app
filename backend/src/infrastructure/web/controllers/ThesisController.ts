@@ -5,6 +5,11 @@ import { NewThesis } from "../../../domain/entities/Thesis";
 
 const thesisService = new ThesisService();
 
+/**
+ * Controller to create a new thesis.
+ * @param {Request} req - The request containing thesis details.
+ * @param {Response} res - The response to be sent back to the client.
+ */
 export const createThesis = async (req: Request, res: Response) => {
     try {
         const { topic, year, domain, scientistInterest, keyword, vacancy, topicValidation, anrtNumber } = req.body;
@@ -16,18 +21,18 @@ export const createThesis = async (req: Request, res: Response) => {
             });
         }
 
-        const newThesis: NewThesis = { 
-            topic, 
-            year, 
-            domain, 
-            scientistInterest, 
-            keyword, 
-            advisorId, 
-            candidateId: null, 
-            vacancy: vacancy || null, 
-            topicValidation: topicValidation || false, 
-            anrtNumber: anrtNumber || null, 
-            };
+        const newThesis: NewThesis = {
+            topic,
+            year,
+            domain,
+            scientistInterest,
+            keyword,
+            advisorId,
+            candidateId: null,
+            vacancy: vacancy || null,
+            topicValidation: topicValidation || false,
+            anrtNumber: anrtNumber || null,
+        };
         const createdThesis = await thesisService.createInitialThesis(newThesis, advisorId);
 
         if (!createdThesis) {
@@ -40,7 +45,7 @@ export const createThesis = async (req: Request, res: Response) => {
             statusCode: 201,
             message: "Thesis created successfully",
             data: createdThesis
-                
+
         });
     } catch (error) {
         console.error(error);
@@ -48,6 +53,11 @@ export const createThesis = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Controller to validate a thesis topic.
+ * @param {Request} req - Contains the thesis ID and validation details.
+ * @param {Response} res - Response to be sent back to the client.
+ */
 export const validateThesisTopic = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
@@ -67,6 +77,11 @@ export const validateThesisTopic = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Controller to update the job vacancy of a thesis.
+ * @param {Request} req - Contains the thesis ID and vacancy details.
+ * @param {Response} res - Response to be sent back to the client.
+ */
 export const updateJobVacancy = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
@@ -86,6 +101,11 @@ export const updateJobVacancy = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Controller to assign a candidate to a thesis.
+ * @param {Request} req - Contains the thesis ID and candidate ID.
+ * @param {Response} res - Response to be sent back to the client.
+ */
 export const assignCandidateToThesis = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
@@ -105,6 +125,11 @@ export const assignCandidateToThesis = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Controller to add an ANRT number to a thesis.
+ * @param {Request} req - Contains the thesis ID and ANRT number.
+ * @param {Response} res - Response to be sent back to the client.
+ */
 export const addAnrtNumberToThesis = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
@@ -124,14 +149,20 @@ export const addAnrtNumberToThesis = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Controller to retrieve all theses.
+ * @param {Request} req - The request to fetch theses.
+ * @param {Response} res - The response containing the list of theses.
+ */
 export const getAllTheses = async (req: Request, res: Response) => {
     try {
         const { year, domain, keyword, topicValidation } = req.query;
-        const filters = { 
-            year: year ? Number(year) : undefined, 
-            domain: domain ? String(domain): undefined, 
-            keyword: keyword ? String(keyword) : undefined, 
-            topicValidation: topicValidation === "true" };
+        const filters = {
+            year: year ? Number(year) : undefined,
+            domain: domain ? String(domain) : undefined,
+            keyword: keyword ? String(keyword) : undefined,
+            topicValidation: topicValidation === "true"
+        };
         const theses = await thesisService.getAllTheses({ id: true, topic: true, year: true, domain: true, scientistInterest: true, keyword: true, vacancy: true, topicValidation: true, anrtNumber: true, refusedTopic: true, advisorId: true, candidateId: true }, filters);
 
         APIResponse(res, {
@@ -145,6 +176,11 @@ export const getAllTheses = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Controller to retrieve a thesis by its ID.
+ * @param {Request} req - Contains the thesis ID in the parameters.
+ * @param {Response} res - Response to be sent back to the client.
+ */
 export const getThesisById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;

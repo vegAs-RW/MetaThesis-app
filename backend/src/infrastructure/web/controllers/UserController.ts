@@ -8,10 +8,14 @@ import bcrypt from "bcrypt";
 
 const userService = new UserService();
 
-
+/**
+ * Controller to retrieve a user by their email address.
+ * @param {Request} req - The request containing the user's email.
+ * @param {Response} res - The response to be sent back to the client.
+ */
 export const getUserByEmail = async (req: Request, res: Response) => {
     try {
-        const {email} = req.body;
+        const { email } = req.body;
         const user = userService.getUserByEmail(email, { email: true, firstname: true, lastname: true });
 
         if (!user) return APIResponse(res, { statusCode: 404, message: "User not found" });
@@ -28,6 +32,11 @@ export const getUserByEmail = async (req: Request, res: Response) => {
     }
 }
 
+/**
+ * Controller to update a user's information.
+ * @param {CustomRequest} req - The request containing the user's ID and updated data.
+ * @param {Response} res - The response to be sent back to the client.
+ */
 export const updateUser = async (req: CustomRequest, res: Response) => {
     try {
         const userId = req.params.id;
@@ -36,7 +45,7 @@ export const updateUser = async (req: CustomRequest, res: Response) => {
 
         if (updatedUserData.password) {
             const hashedPassword = await bcrypt.hash(updatedUserData.password, 12);
-            updatedUserData = { ...updatedUserData, password: hashedPassword }; 
+            updatedUserData = { ...updatedUserData, password: hashedPassword };
         }
 
         const updatedUser: User = { ...updatedUserData, id: userId };
