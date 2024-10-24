@@ -6,15 +6,18 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import router from "./infrastructure/web/routes";
 
-import cors from "cors"
+import cors from "cors";
 
-import env from "./config/env"
+import env from "./config/env";
 
 
 const {PORT, HOST} = env
 
 const app = express();
-
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
