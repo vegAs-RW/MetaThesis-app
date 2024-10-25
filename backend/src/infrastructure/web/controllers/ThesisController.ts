@@ -12,9 +12,9 @@ const thesisService = new ThesisService();
  */
 export const createThesis = async (req: Request, res: Response) => {
     try {
-        const { topic, year, domain, scientistInterest, keyword, vacancy, topicValidation, anrtNumber } = req.body;
-        const advisorId = req.user?.userId;
-        if (!topic.trim() || !year || !domain.trim() || !scientistInterest.trim() || !keyword.trim() || !advisorId.trim()) {
+        const { topic, year, domain, scientistInterest, keyword, advisorId } = req.body;
+        
+        if (!topic.trim() || !year || !domain.trim() || !scientistInterest.trim() || !keyword.trim()|| !advisorId) {
             return APIResponse(res, {
                 statusCode: 400,
                 message: "Invalid thesis details",
@@ -29,11 +29,9 @@ export const createThesis = async (req: Request, res: Response) => {
             keyword,
             advisorId,
             candidateId: null,
-            vacancy: vacancy || null,
-            topicValidation: topicValidation || false,
-            anrtNumber: anrtNumber || null,
+            
         };
-        const createdThesis = await thesisService.createInitialThesis(newThesis, advisorId);
+        const createdThesis = await thesisService.createInitialThesis(newThesis);
 
         if (!createdThesis) {
             return APIResponse(res, {
@@ -197,3 +195,18 @@ export const getThesisById = async (req: Request, res: Response) => {
         return APIResponse(res, { statusCode: 500, message: "An error occurred while fetching thesis" });
     }
 }
+
+export const getThesesByAdvisorId = async (req: Request, res: Response) => {
+    const  advisorId  = req.params.id;
+    try {
+        const theses = await thesisService.getThesesByAdvisorId(advisorId);
+        return APIResponse(res, {
+            statusCode: 200,
+            message: "Theses fetched successfully",
+            data: theses,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "An error occurred while fetching theses." });
+    }
+};

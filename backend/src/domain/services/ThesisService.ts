@@ -21,8 +21,8 @@ export class ThesisService {
     * @param {string} advisorId - The ID of the advisor associated with the thesis.
     * @returns {Promise<Thesis>} - A promise that resolves to the newly created thesis object.
     */
-    async createInitialThesis(thesis: Partial<NewThesis>, advisorId: string) {
-        return this.thesisRepository.createInitialThesis(thesis, advisorId);
+    async createInitialThesis(thesis: Partial<NewThesis>) {
+        return this.thesisRepository.createInitialThesis(thesis);
     }
 
     /**
@@ -88,5 +88,14 @@ export class ThesisService {
      */
     async getThesisById(id: string, columns: ThesisColumns) {
         return this.thesisRepository.getThesisById(id, columns || { id: true, topic: true, year: true, domain: true, scientistInterest: true, keyword: true, vacancy: true, topicValidation: true, anrtNumber: true, refusedTopic: true, advisor: true, candidate: true });
+    }
+
+    /**
+     * Retrieves all theses associated with a specific advisor ID.
+     * @param {string} advisorId - The ID of the advisor for which to retrieve theses.
+     * @returns {Promise<Thesis[]>} - A promise that resolves to a list of theses associated with the advisor.
+     */
+    async getThesesByAdvisorId(advisorId: string): Promise<Thesis[]> {
+        return this.thesisRepository.getThesesByAdvisorId(advisorId);
     }
 }

@@ -14,7 +14,7 @@ export class ThesisRepository {
      * @param {string} advisorId - The ID of the advisor associated with the thesis
      * @returns {Promise<Thesis>} - A promise containing the created thesis
      */
-    async createInitialThesis(thesis: Partial<NewThesis>, advisorId: string) {
+    async createInitialThesis(thesis: Partial<NewThesis>) {
         try {
             if (!thesis.topic || !thesis.year || !thesis.domain || !thesis.scientistInterest || !thesis.keyword || !thesis.advisorId) {
                 throw new Error("Missing required fields: topic, year, domain, scientistInterest, keyword, or advisorId");
@@ -27,7 +27,7 @@ export class ThesisRepository {
                     domain: thesis.domain,
                     scientistInterest: thesis.scientistInterest,
                     keyword: thesis.keyword,
-                    advisorId: advisorId,
+                    advisorId: thesis.advisorId,
                     candidateId: thesis.candidateId || null,
                     vacancy: thesis.vacancy || null,
                     topicValidation: thesis.topicValidation || false,
@@ -200,6 +200,34 @@ export class ThesisRepository {
         } catch (error) {
             console.error(error);
             throw new Error("An error occurred while fetching thesis")
+        }
+    }
+
+    async getThesesByAdvisorId(advisorId: string): Promise<Thesis[]> {
+        try {
+            const thesesList = await db
+                .select({
+                    id: theses.id,
+                    topic: theses.topic,
+                    year: theses.year,
+                    domain: theses.domain,
+                    scientistInterest: theses.scientistInterest,
+                    keyword: theses.keyword,
+                    vacancy: theses.vacancy,
+                    topicValidation: theses.topicValidation,
+                    anrtNumber: theses.anrtNumber,
+                    refusedTopic: theses.refusedTopic,
+                    advisorId: theses.advisorId,
+                    candidateId: theses.candidateId,
+                })
+                .from(theses)
+                .where(eq(theses.advisorId, advisorId))
+                .execute();
+    
+            return thesesList; // Retourne toutes les thèses associées à l'advisor
+        } catch (error) {
+            console.error(error);
+            throw new Error("An error occurred while fetching theses by advisor ID");
         }
     }
 }
