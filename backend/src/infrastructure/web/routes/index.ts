@@ -22,8 +22,8 @@ router.use('/establishment', /*isAuth,*/ establishmentRoutes);
 
 router.use('/lab-director', isAuth, labDirectorRoutes);
 
-router.use('/candidate', isAuth, candidateRoutes);
+router.use('/candidate', /*isAuth,*/ candidateRoutes);
 
-router.use('/thesis', isAuth, thesisRoutes);
+router.use('/thesis', /*isAuth,*/ thesisRoutes);
 
 export default router;
