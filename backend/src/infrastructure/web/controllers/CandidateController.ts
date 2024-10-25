@@ -14,9 +14,9 @@ const candidateService = new CandidateService();
 export const createCandidate = async (req: CustomRequest, res: Response) => {
     try {
         // Destructuring necessary fields from the request body
-        const { firstname, lastname, birthdate, lastDegree, dateLastDegree, doctoralSchool, residentPermit } = req.body;
+        const { firstname, lastname, birthdate, lastDegree, dateLastDegree, doctoralSchool, residentPermit, advisor} = req.body;
         // Creating a new candidate object with advisor ID and validation fields
-        const newCandidate = { firstname, lastname, birthdate, lastDegree, dateLastDegree, doctoralSchool, residentPermit, advisor: req.user.userId, hrValidation: false, zrrValidation: false, committeeValidation: false };
+        const newCandidate = { firstname, lastname, birthdate, lastDegree, dateLastDegree, doctoralSchool, residentPermit, advisor: advisor, hrValidation: false, zrrValidation: false, committeeValidation: false };
         // Creating the new candidate through the service
         const createdCandidate = await candidateService.createCandidate(newCandidate);
         // Handling the case where candidate creation fails
