@@ -48,20 +48,20 @@ const DashboardAdvisor: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-blue-200 to-blue-500 p-8">
-            <h1 className="text-3xl font-bold text-blue-600 mb-6 text-center">Tableau de Bord Advisor</h1>
+            <h1 className="text-3xl font-bold text-blue-600 mb-6 text-center">Dashboard</h1>
             <div className="bg-white rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-semibold mb-4">Demandes de Thèse</h2>
+                <h2 className="text-xl font-semibold mb-4">My theses requests</h2>
                 {loading ? (
-                    <p className="text-center text-gray-600">Chargement des demandes de thèse...</p>
+                    <p className="text-center text-gray-600">Loading theses requests...</p>
                 ) : thesisRequests.length === 0 ? (
-                    <p className="text-center text-gray-600">Aucune demande de thèse à afficher.</p>
+                    <p className="text-center text-gray-600">No theses requests.</p>
                 ) : (
                     <table className="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden shadow-lg">
                         <thead className="bg-blue-600 text-white">
                             <tr>
-                                <th className="py-3 px-4 border-b border-gray-300 text-left">Sujet</th>
-                                <th className="py-3 px-4 border-b border-gray-300 text-left">Année</th>
-                                <th className="py-3 px-4 border-b border-gray-300 text-left">Mots clés</th>
+                                <th className="py-3 px-4 border-b border-gray-300 text-left">Topic</th>
+                                <th className="py-3 px-4 border-b border-gray-300 text-left">Year</th>
+                                <th className="py-3 px-4 border-b border-gray-300 text-left">Keyword</th>
                             </tr>
                         </thead>
                         <tbody>

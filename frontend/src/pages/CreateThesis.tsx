@@ -1,13 +1,12 @@
-// CreateThesis.tsx
 import React, { useState } from 'react';
 import api from '../services/api';
 import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store'; // Assurez-vous d'importer le bon type
+import { RootState } from '../redux/store';
 import { useNavigate } from 'react-router-dom';
-import  {jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 
 interface TokenPayload {
-    userId: string; // ou tout autre champ que vous avez dans le token
+    userId: string;
 }
 
 const CreateThesis: React.FC = () => {
@@ -16,6 +15,16 @@ const CreateThesis: React.FC = () => {
   const [domain, setDomain] = useState('');
   const [scientistInterest, setScientistInterest] = useState('');
   const [keyword, setKeyword] = useState('');
+
+  // États pour le candidat
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
+  const [birthdate, setBirthdate] = useState('');
+  const [lastDegree, setLastDegree] = useState('');
+  const [dateLastDegree, setDateLastDegree] = useState('');
+  const [doctoralSchool, setDoctoralSchool] = useState('');
+  const [residentPermit, setResidentPermit] = useState(false);
+
   const [errorMessage, setErrorMessage] = useState('');
   const token = useSelector((state: RootState) => state.auth.token);
   const navigate = useNavigate();
@@ -26,101 +35,194 @@ const CreateThesis: React.FC = () => {
     e.preventDefault();
     setErrorMessage('');
 
-    // Validation simple des champs requis
-    if (!topic || !year || !domain || !scientistInterest || !keyword) {
+    if (!topic || !year || !domain || !scientistInterest || !keyword ||
+        !firstname || !lastname || !birthdate || !lastDegree || !dateLastDegree || !doctoralSchool) {
       setErrorMessage('Tous les champs sont requis.');
       return;
     }
 
-    const newThesis = {
+    try {
+      const candidateData = {
+        firstname,
+        lastname,
+        birthdate,
+        lastDegree,
+        dateLastDegree,
+        doctoralSchool,
+        residentPermit,
+        advisor: advisorId,
+      };
+      const candidateResponse = await api.post('/candidate', candidateData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const candidateId = candidateResponse.data.data.candidate;
+
+      const newThesis = {
         topic,
         year,
         domain,
         scientistInterest,
         keyword,
-        advisorId: advisorId,
-        };
+        advisorId,
+        candidateId,
+      };
 
-        console.log("Données de la thèse :", newThesis);
-
-    try {
-      const response = await api.post('/thesis', newThesis, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const thesisResponse = await api.post('/thesis', newThesis, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      // Rediriger vers la page de tableau de bord après la création réussie
-      if (response.status === 201) {
-        navigate('/dashboard/advisor'); // Modifiez ceci selon votre chemin de tableau de bord
+
+      if (thesisResponse.status === 201) {
+        navigate('/dashboard/advisor');
       }
     } catch (error) {
-      console.error('Erreur lors de la création de la thèse:', error);
-      setErrorMessage('Une erreur est survenue lors de la création de la thèse.');
+      console.error('Erreur lors de la création de la thèse ou du candidat:', error);
+      setErrorMessage('Une erreur est survenue lors de la création de la thèse ou du candidat.');
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-200 to-blue-500 p-8">
-      <h1 className="text-3xl font-bold text-blue-600 mb-6 text-center">Créer une Nouvelle Thèse</h1>
-      <div className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
+      <h1 className="text-3xl font-bold text-blue-600 mb-6 text-center">Create a new thesis request</h1>
+      <div className="bg-white rounded-lg shadow-lg p-8 max-w-3xl mx-auto">
         {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
+
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block mb-2">Sujet :</label>
-            <input
-              type="text"
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
-              className="border rounded w-full py-2 px-3"
-              required
-            />
+          {/* Section Thèse */}
+          <h2 className="text-2xl font-semibold text-blue-600 mb-4 border-b pb-2">Thesis informations</h2>
+          <div className="grid grid-cols-2 gap-6 mb-8">
+            <div className="col-span-2">
+              <label className="block mb-2">Topic :</label>
+              <textarea
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+                className="border rounded w-full py-2 px-3 resize-y h-32"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2">Year :</label>
+              <input
+                type="number"
+                value={year}
+                onChange={(e) => setYear(Number(e.target.value))}
+                className="border rounded w-full py-2 px-3"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2">Domain :</label>
+              <input
+                type="text"
+                value={domain}
+                onChange={(e) => setDomain(e.target.value)}
+                className="border rounded w-full py-2 px-3"
+                required
+              />
+            </div>
+            <div className="col-span-2">
+              <label className="block mb-2">Scientist interest :</label>
+              <select
+                value={scientistInterest}
+                onChange={(e) => setScientistInterest(e.target.value)}
+                className="border rounded w-full py-2 px-3"
+                required
+              >
+                <option value="" disabled>Select an option</option>
+                <option value="Faible">Low</option>
+                <option value="Moyen">Medium</option>
+                <option value="Élevé">High</option>
+              </select>
+            </div>
+            <div className="col-span-2">
+              <label className="block mb-2">Keyword :</label>
+              <input
+                type="text"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                className="border rounded w-full py-2 px-3"
+                required
+              />
+            </div>
           </div>
-          <div className="mb-4">
-            <label className="block mb-2">Année :</label>
-            <input
-              type="number"
-              value={year}
-              onChange={(e) => setYear(Number(e.target.value))}
-              className="border rounded w-full py-2 px-3"
-              required
-            />
+
+          {/* Section Candidat */}
+          <h2 className="text-2xl font-semibold text-blue-600 mb-4 border-b pb-2">Candidate's informations</h2>
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <label className="block mb-2">Firstname :</label>
+              <input
+                type="text"
+                value={firstname}
+                onChange={(e) => setFirstname(e.target.value)}
+                className="border rounded w-full py-2 px-3"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2">Lastname :</label>
+              <input
+                type="text"
+                value={lastname}
+                onChange={(e) => setLastname(e.target.value)}
+                className="border rounded w-full py-2 px-3"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2">Birthdate :</label>
+              <input
+                type="date"
+                value={birthdate}
+                onChange={(e) => setBirthdate(e.target.value)}
+                className="border rounded w-full py-2 px-3"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2">Last degree :</label>
+              <input
+                type="text"
+                value={lastDegree}
+                onChange={(e) => setLastDegree(e.target.value)}
+                className="border rounded w-full py-2 px-3"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2">Last degree's date :</label>
+              <input
+                type="date"
+                value={dateLastDegree}
+                onChange={(e) => setDateLastDegree(e.target.value)}
+                className="border rounded w-full py-2 px-3"
+                required
+              />
+            </div>
+            <div className="col-span-2">
+              <label className="block mb-2">Doctoral school :</label>
+              <input
+                type="text"
+                value={doctoralSchool}
+                onChange={(e) => setDoctoralSchool(e.target.value)}
+                className="border rounded w-full py-2 px-3"
+                required
+              />
+            </div>
+            <div className="col-span-2">
+              <label className="flex items-center space-x-2">
+                <span>Resident Permit (if not french) :</span>
+                <input
+                  type="checkbox"
+                  checked={residentPermit}
+                  onChange={(e) => setResidentPermit(e.target.checked)}
+                  className="border rounded"
+                />
+              </label>
+            </div>
           </div>
-          <div className="mb-4">
-            <label className="block mb-2">Domaine :</label>
-            <input
-              type="text"
-              value={domain}
-              onChange={(e) => setDomain(e.target.value)}
-              className="border rounded w-full py-2 px-3"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2">Intérêt Scientifique :</label>
-            <select
-              value={scientistInterest}
-              onChange={(e) => setScientistInterest(e.target.value)}
-              className="border rounded w-full py-2 px-3"
-              required
-            >
-              <option value="" disabled>Select your option</option>
-              <option value="Faible">Faible</option>
-              <option value="Moyen">Moyen</option>
-              <option value="Élevé">Élevé</option>
-            </select>
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2">Mots-clés :</label>
-            <input
-              type="text"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              className="border rounded w-full py-2 px-3"
-              required
-            />
-          </div>
-          <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded">
-            Créer Thèse
+
+          <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded mt-6">
+            Submit
           </button>
         </form>
       </div>
