@@ -76,7 +76,7 @@ export class ThesisService {
      * @param {boolean} [filters.topicValidation] - Filter based on the topic validation status.
      * @returns {Promise<Thesis[]>} - A promise that resolves to a list of theses.
      */
-    async getAllTheses(columns: ThesisColumns, filters: { year?: number, domain?: string, keyword?: string, topicValidation?: boolean }) {
+    async getAllTheses(columns: ThesisColumns, filters: { year?: number, domain?: string, keyword?: string, advisorName?: string }) {
         return this.thesisRepository.getAllTheses(columns || { id: true, topic: true, year: true, domain: true, scientistInterest: true, keyword: true, vacancy: true, topicValidation: true, anrtNumber: true, refusedTopic: true, advisor: true, candidate: true }, filters);
     }
 

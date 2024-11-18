@@ -1,7 +1,7 @@
 import { db } from "../data";
 import { theses, users, advisors, establishments, candidates } from "../data/schema";
 import { Thesis, NewThesis, ThesisColumns, ThesisWithRelations } from "../../domain/entities/Thesis";
-import { eq, ilike } from "drizzle-orm";
+import { eq, ilike, and, or } from "drizzle-orm";
 
 /**
  * Repository that manages CRUD operations for theses
@@ -135,7 +135,7 @@ export class ThesisRepository {
      * @param {{keyword?: string, year?: number, domain?: string, topicValidation?: boolean}} filters - The search filters
      * @returns {Promise<Thesis[]>} - A promise containing the list of theses matching the criteria
      */
-    async getAllTheses(columns: ThesisColumns, filters: {keyword?: string, year?: number, domain?: string, topicValidation?: boolean} = {}) {
+    async getAllTheses(columns: ThesisColumns, filters: {keyword?: string, year?: number, domain?: string, advisorName?: string}) {
         try {
             const query =  db.select({
                 id: theses.id,
@@ -154,6 +154,8 @@ export class ThesisRepository {
                     research_area: advisors.research_area,
                     ifrs: advisors.ifrs,
                     costCenter: advisors.costCenter,
+                    firstname: users.firstname,
+                    lastname: users.lastname,
                 },
                 candidate: {
                     id: candidates.id,
@@ -164,19 +166,32 @@ export class ThesisRepository {
                 .from(theses)
                 .leftJoin(advisors, eq(theses.advisorId, advisors.id))
                 .leftJoin(candidates, eq(theses.candidateId, candidates.id))
+                .leftJoin(users, eq(advisors.id, users.id));
+
+                const conditions = [];
 
                 if (filters.keyword) {
-                    query.where(ilike(theses.keyword, `%${filters.keyword}%`));
+                    conditions.push(ilike(theses.keyword, `%${filters.keyword}%`));
                 }
                 if (filters.year) {
-                    query.where(eq(theses.year, filters.year));
+                    conditions.push(eq(theses.year, filters.year));
                 }
                 if (filters.domain) {
-                    query.where(ilike(theses.domain, `%${filters.domain}%`));
+                    conditions.push(ilike(theses.domain, `%${filters.domain}%`));
                 }
-                if (filters.topicValidation !== undefined) {
-                    query.where(eq(theses.topicValidation, filters.topicValidation));
+
+                if (filters.advisorName) {
+                    conditions.push(or(
+                        ilike(users.firstname, `%${filters.advisorName}%`),
+                        ilike(users.lastname, `%${filters.advisorName}%`)
+                    ));
                 }
+               
+                // Si des conditions sont présentes, les ajouter à la requête avec AND
+                if (conditions.length > 0) {
+                    query.where(and(...conditions));
+                }
+                
             return await query.execute();
         } catch (error) {
             console.error(error);

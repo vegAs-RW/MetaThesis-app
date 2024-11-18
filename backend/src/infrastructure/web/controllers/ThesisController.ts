@@ -12,7 +12,7 @@ const thesisService = new ThesisService();
  */
 export const createThesis = async (req: Request, res: Response) => {
     try {
-        const { topic, year, domain, scientistInterest, keyword, advisorId } = req.body;
+        const { topic, year, domain, scientistInterest, keyword, advisorId, candidateId } = req.body;
         
         if (!topic.trim() || !year || !domain.trim() || !scientistInterest.trim() || !keyword.trim()|| !advisorId) {
             return APIResponse(res, {
@@ -28,7 +28,7 @@ export const createThesis = async (req: Request, res: Response) => {
             scientistInterest,
             keyword,
             advisorId,
-            candidateId: null,
+            candidateId,
             
         };
         const createdThesis = await thesisService.createInitialThesis(newThesis);
@@ -154,15 +154,15 @@ export const addAnrtNumberToThesis = async (req: Request, res: Response) => {
  */
 export const getAllTheses = async (req: Request, res: Response) => {
     try {
-        const { year, domain, keyword, topicValidation } = req.query;
+        const { year, domain, keyword, advisorName} = req.query;
         const filters = {
             year: year ? Number(year) : undefined,
             domain: domain ? String(domain) : undefined,
             keyword: keyword ? String(keyword) : undefined,
-            topicValidation: topicValidation === "true"
+            advisorName: advisorName ? String(advisorName) : undefined,
         };
         const theses = await thesisService.getAllTheses({ id: true, topic: true, year: true, domain: true, scientistInterest: true, keyword: true, vacancy: true, topicValidation: true, anrtNumber: true, refusedTopic: true, advisorId: true, candidateId: true }, filters);
-
+        console.log("filtres", req.query);
         APIResponse(res, {
             statusCode: 200,
             message: "Theses fetched successfully",
