@@ -6,6 +6,8 @@ import CreateThesis from './pages/CreateThesis'
 import EditThesis from './pages/EditThesis'
 import './style/tailwind.css'
 import Layout from './components/Layout'
+import AdminDashboard from './pages/AdminDashboard'
+import LaboratoryList from './pages/LaboratoriesDashboard'
 
 const App: React.FC = () => {
   return (
@@ -18,6 +20,8 @@ const App: React.FC = () => {
           <Route path="/dashboard/advisor" element={<DashboardAdvisor />} />
           <Route path="/create-thesis" element={<CreateThesis />} />
           <Route path="/thesis/edit/:thesisId" element={<EditThesis />} />
+          <Route path="/all-theses" element={<AdminDashboard />} />
+          <Route path="/all-laboratories" element={<LaboratoryList />} />
         </Routes>
         </Layout>
     </Router>

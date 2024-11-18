@@ -9,7 +9,7 @@ const Menu: React.FC = () => {
   const userRole = useSelector((state: RootState) => state.auth.role); // Supposons que le rôle est stocké dans le state
 
   if (!token) {
-    return null; // Ne rien afficher si l'utilisateur n'est pas connecté
+    return null;
   }
 
   const renderMenuItems = () => {
@@ -32,14 +32,29 @@ const Menu: React.FC = () => {
       case 'admin':
         return (
           <>
+          <li>
+              <Link to="/all-theses" className="text-blue-600 hover:text-blue-800">
+                Theses Dashboard
+              </Link>
+            </li>
             <li>
-              <Link to="/my-applications" className="text-blue-600 hover:text-blue-800">
-                Mes candidatures
+              <Link to="/all-laboratories" className="text-blue-600 hover:text-blue-800">
+                Laboratories Dashboard
+              </Link>
+            </li>
+             <li>
+              <Link to="/add-establishment" className="text-blue-600 hover:text-blue-800">
+                Establishments Dashboard
+              </Link>
+            </li>
+            
+            <li>
+              <Link to="/data-analysis" className="text-blue-600 hover:text-blue-800">
+                Analyse des données
               </Link>
             </li>
           </>
         );
-      // Ajoutez d'autres rôles si nécessaire
       default:
         return null;
     }
