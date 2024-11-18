@@ -195,8 +195,7 @@ export const getLabDirectorByLaboratory = async (req: Request, res: Response) =>
             hdr: true,
             laboratory: true
         });
-
-        if (director) {
+        if (!director) {
             return APIResponse(res, {
                 statusCode: 404,
                 message: "No Lab Directors found for this Laboratory",

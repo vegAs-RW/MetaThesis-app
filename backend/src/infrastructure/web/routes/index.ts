@@ -20,7 +20,7 @@ router.use('/laboratory', /*isAuth,*/ laboratoryRoutes);
 
 router.use('/establishment', /*isAuth,*/ establishmentRoutes);
 
-router.use('/lab-director', isAuth, labDirectorRoutes);
+router.use('/lab-director', /*isAuth,*/ labDirectorRoutes);
 
 router.use('/candidate', /*isAuth,*/ candidateRoutes);
 
