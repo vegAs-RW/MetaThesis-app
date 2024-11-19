@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import api from "../services/api";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import AddLaboratory from "../components/AddLaboratoryPage";
-import LaboratoryDetailsModal from "../components/LaboratoryDetails.tsx";
+import AddEntityModal from "../components/AddEntityModal.tsx";
+import { laboratoryFields } from "../constants/laboratoryFields.tsx";
+import EntityDetailsModal from "../components/EntityDetailsModal.tsx";
 
 interface Laboratory {
   id: string;
@@ -28,7 +29,9 @@ const LaboratoryDashboard: React.FC = () => {
   const [error, setError] = useState("");
   const [isAddLabModalOpen, setIsAddLabModalOpen] = useState(false);
   const [isLabDetailsModalOpen, setIsLabDetailsModalOpen] = useState(false);
-  const [selectedLaboratoryId, setSelectedLaboratoryId] = useState<string | null>(null);
+  const [selectedLaboratoryId, setSelectedLaboratoryId] = useState<
+    string | null
+  >(null);
   const token = useSelector((state: RootState) => state.auth.token);
 
   const fetchLaboratories = async () => {
@@ -55,18 +58,63 @@ const LaboratoryDashboard: React.FC = () => {
   }, [token]);
 
   const handleLaboratoryClick = (laboratoryId: string) => {
-    setSelectedLaboratoryId(laboratoryId); // Stocker l'ID du laboratoire sélectionné
-    setIsLabDetailsModalOpen(true); // Ouvrir la modale
+    setSelectedLaboratoryId(laboratoryId);
+    setIsLabDetailsModalOpen(true);
   };
 
   const closeLabDetailsModal = () => {
-    setIsLabDetailsModalOpen(false); // Fermer la modale
-    setSelectedLaboratoryId(null); // Réinitialiser l'ID du laboratoire sélectionné
-  }
+    setIsLabDetailsModalOpen(false);
+    setSelectedLaboratoryId(null);
+  };
 
   const closeAddLabModal = () => {
-    setIsAddLabModalOpen(false); // Fermer la modale
-    
+    setIsAddLabModalOpen(false);
+  };
+
+  const handleAddLaboratory = async (formData: Record<string, any>) => {
+    try {
+      await api.post(
+        "/laboratory",
+        { ...formData },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      fetchLaboratories();
+    } catch (err) {
+      console.error("Error adding laboratory:", err);
+      throw err;
+    }
+  };
+
+  const handleDirectorUpdate = async (data: Record<string, any>) => {
+    try {
+      const directorData = {
+        firstname: data.firstname,
+        lastname: data.lastname,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+        hdr: data.hdr,
+      };
+  
+      await api.put(`/lab-director/${data.id}`, directorData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      refreshLaboratories();
+    } catch (err) {
+      console.error("Error updating director:", err);
+      alert("Failed to update director information. Please try again later.");
+    }
+  };
+  
+
+  const refreshLaboratories = async (): Promise<void> => {
+    await fetchLaboratories();
   };
 
   if (loading) {
@@ -85,7 +133,7 @@ const LaboratoryDashboard: React.FC = () => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold text-gray-800">Laboratories</h2>
         <button
-        onClick={() => setIsAddLabModalOpen(true)}
+          onClick={() => setIsAddLabModalOpen(true)}
           className="px-4 py-2 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-700"
         >
           Add a Laboratory
@@ -120,8 +168,11 @@ const LaboratoryDashboard: React.FC = () => {
             </thead>
             <tbody>
               {laboratories.map((lab) => (
-                <tr key={lab.id} className="hover:bg-gray-100"
-                onClick={() => handleLaboratoryClick(lab.id)}>
+                <tr
+                  key={lab.id}
+                  className="hover:bg-gray-100"
+                  onClick={() => handleLaboratoryClick(lab.id)}
+                >
                   <td className="border border-gray-300 px-4 py-2">
                     {lab.name}
                   </td>
@@ -146,21 +197,40 @@ const LaboratoryDashboard: React.FC = () => {
           </table>
         </div>
       )}
-      {/* Modale pour afficher les détails du laboratoire */}
       {isLabDetailsModalOpen && selectedLaboratoryId && (
-        <LaboratoryDetailsModal
-          laboratoryId={selectedLaboratoryId} // Passer l'ID du laboratoire
-          onClose={closeLabDetailsModal} // Fonction pour fermer la modale
-          onLaboratoryUpdated={fetchLaboratories} // Rafraîchir la liste après modification
+        <EntityDetailsModal
+          entityId={selectedLaboratoryId}
+          entityName="Laboratory"
+          apiEndpoints={{
+            entity: "/laboratory",
+            additional: "/lab-director/laboratory",
+          }}
+          fields={[
+            { label: "Name", value: "name" },
+            { label: "Address", value: "address" },
+            { label: "City", value: "city" },
+            { label: "Country", value: "country" },
+            { label: "Means", value: "means" },
+            { label: "Expertise", value: "expertise" },
+            { label: "Director", value: "director", type: "text" },
+            { label: "Director's Email", value: "email", type: "text" },
+            { label: "Director's Phone", value: "phoneNumber", type: "text" },
+            { label: "HDR", value: "hdr", type: "boolean" },
+          ]}
+          onClose={closeLabDetailsModal}
+          onEntityUpdated={refreshLaboratories}
+          onDirectorUpdate={handleDirectorUpdate}
         />
       )}
-      {/* Pop-up modale */}
       {isAddLabModalOpen && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full md:w-3/4 lg:w-2/3 max-h-[80vh] overflow-y-auto">
-            <AddLaboratory
-              onClose={closeAddLabModal} // Ferme la popup
-              onLaboratoryAdded={fetchLaboratories} // Rafraîchit la liste après ajout
+            <AddEntityModal
+              onClose={closeAddLabModal}
+              onSubmit={handleAddLaboratory}
+              /*onLaboratoryAdded={fetchLaboratories} */
+              fields={laboratoryFields}
+              entityName="Laboratory"
             />
           </div>
         </div>
