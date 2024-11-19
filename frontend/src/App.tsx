@@ -8,6 +8,7 @@ import './style/tailwind.css'
 import Layout from './components/Layout'
 import AdminDashboard from './pages/AdminDashboard'
 import LaboratoryList from './pages/LaboratoriesDashboard'
+import EstablishmentDashboard from './pages/EstablishmentDashboard'
 
 const App: React.FC = () => {
   return (
@@ -22,6 +23,7 @@ const App: React.FC = () => {
           <Route path="/thesis/edit/:thesisId" element={<EditThesis />} />
           <Route path="/all-theses" element={<AdminDashboard />} />
           <Route path="/all-laboratories" element={<LaboratoryList />} />
+          <Route path="/all-establishments" element={<EstablishmentDashboard />} />
         </Routes>
         </Layout>
     </Router>

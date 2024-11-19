@@ -43,7 +43,7 @@ const Menu: React.FC = () => {
               </Link>
             </li>
              <li>
-              <Link to="/add-establishment" className="text-blue-600 hover:text-blue-800">
+              <Link to="/all-establishments" className="text-blue-600 hover:text-blue-800">
                 Establishments Dashboard
               </Link>
             </li>
