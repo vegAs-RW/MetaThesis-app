@@ -210,8 +210,8 @@ const LaboratoryDashboard: React.FC = () => {
             { label: "Address", value: "address" },
             { label: "City", value: "city" },
             { label: "Country", value: "country" },
-            { label: "Means", value: "means" },
-            { label: "Expertise", value: "expertise" },
+            { label: "Means", value: "means", type: "select", options: ["Low", "Medium", "High"] },
+            { label: "Expertise", value: "expertise", type: "select", options: ["Low", "Medium", "High"] },
             { label: "Director's firstname", value: "firstname", type: "text" },
             { label: "Director's lastname", value: "lastname", type: "text" },
             { label: "Director's Email", value: "email", type: "text" },
@@ -229,7 +229,6 @@ const LaboratoryDashboard: React.FC = () => {
             <AddEntityModal
               onClose={closeAddLabModal}
               onSubmit={handleAddLaboratory}
-              /*onLaboratoryAdded={fetchLaboratories} */
               fields={laboratoryFields}
               entityName="Laboratory"
             />
