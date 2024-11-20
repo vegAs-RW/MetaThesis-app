@@ -1,5 +1,5 @@
 import { db } from "../data";
-import { theses, users, advisors, establishments, candidates } from "../data/schema";
+import { theses, users, advisors, establishments, candidates, laboratories } from "../data/schema";
 import { Thesis, NewThesis, ThesisColumns, ThesisWithRelations } from "../../domain/entities/Thesis";
 import { eq, ilike, and, or } from "drizzle-orm";
 
@@ -32,7 +32,8 @@ export class ThesisRepository {
                     vacancy: thesis.vacancy || null,
                     topicValidation: thesis.topicValidation || false,
                     anrtNumber: thesis.anrtNumber || null,
-                    refusedTopic: thesis.refusedTopic || null
+                    refusedTopic: thesis.refusedTopic || null,
+                    laboratoryId: thesis.laboratoryId || null
                 })
                 .returning({ id: theses.id })
                 .execute();
@@ -161,13 +162,22 @@ export class ThesisRepository {
                     id: candidates.id,
                     firstname: candidates.firstname,
                     lastname: candidates.lastname
+                },
+                laboratory: {
+                    id: laboratories.id,
+                    name: laboratories.name,
+                    address: laboratories.address,
+                    city: laboratories.city,
+                    country: laboratories.country,
+                    means: laboratories.means,
+                    expertise: laboratories.expertise
                 }
             })
                 .from(theses)
                 .leftJoin(advisors, eq(theses.advisorId, advisors.id))
                 .leftJoin(candidates, eq(theses.candidateId, candidates.id))
-                .leftJoin(users, eq(advisors.id, users.id));
-
+                .leftJoin(users, eq(advisors.id, users.id))
+                .leftJoin(laboratories, eq(theses.laboratoryId, laboratories.id));
                 const conditions = [];
 
                 if (filters.keyword) {
@@ -234,6 +244,7 @@ export class ThesisRepository {
                     refusedTopic: theses.refusedTopic,
                     advisorId: theses.advisorId,
                     candidateId: theses.candidateId,
+                    laboratoryId: theses.laboratoryId
                 })
                 .from(theses)
                 .where(eq(theses.advisorId, advisorId))
@@ -243,6 +254,27 @@ export class ThesisRepository {
         } catch (error) {
             console.error(error);
             throw new Error("An error occurred while fetching theses by advisor ID");
+        }
+    }
+
+     /**
+     * Updates the laboratory associated with a thesis
+     * @param {string} thesisId - The ID of the thesis to update
+     * @param {string | null} laboratoryId - The new laboratory ID to associate, or null to remove the association
+     * @returns {Promise<void>} - A promise indicating that the laboratory has been updated
+     */
+     async updateThesisLaboratory(thesisId: string, laboratoryId: string | null) {
+        try {
+            const result = await db.update(theses)
+                .set({
+                    laboratoryId
+                })
+                .where(eq(theses.id, thesisId))
+                .execute();
+            return result;
+        } catch (error) {
+            console.error(error);
+            throw new Error("An error occurred while updating thesis laboratory");
         }
     }
 }
