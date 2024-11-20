@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
@@ -25,18 +25,32 @@ const CreateThesis: React.FC = () => {
   const [doctoralSchool, setDoctoralSchool] = useState('');
   const [residentPermit, setResidentPermit] = useState(false);
 
+
+  const [labs, setLabs] = useState([]);
+  const [selectedLab, setSelectedLab] = useState('');
+
   const [errorMessage, setErrorMessage] = useState('');
   const token = useSelector((state: RootState) => state.auth.token);
   const navigate = useNavigate();
 
   const advisorId = token ? (jwtDecode<TokenPayload>(token).userId || null) : null;
 
+  const fetchLaboratories = async () => {
+    try {
+      const response = await api.get('/laboratory');
+      setLabs(response.data.data);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des laboratoires:', error);
+    }
+  }
+
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMessage('');
 
     if (!topic || !year || !domain || !scientistInterest || !keyword ||
-        !firstname || !lastname || !birthdate || !lastDegree || !dateLastDegree || !doctoralSchool) {
+        !firstname || !lastname || !birthdate || !lastDegree || !dateLastDegree || !doctoralSchool || !selectedLab) {
       setErrorMessage('Tous les champs sont requis.');
       return;
     }
@@ -65,6 +79,7 @@ const CreateThesis: React.FC = () => {
         keyword,
         advisorId,
         candidateId,
+        laboratoryId: selectedLab,
       };
 
       const thesisResponse = await api.post('/thesis', newThesis, {
@@ -79,6 +94,10 @@ const CreateThesis: React.FC = () => {
       setErrorMessage('Une erreur est survenue lors de la création de la thèse ou du candidat.');
     }
   };
+
+  useEffect(() => {
+    fetchLaboratories();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-200 to-blue-500 p-8">
@@ -143,7 +162,24 @@ const CreateThesis: React.FC = () => {
                 required
               />
             </div>
+            <div className="col-span-2">
+            <label className="block md-2">Laboratory :</label>
+            <select
+              value={selectedLab || ''}
+              onChange={(e) => setSelectedLab(e.target.value)}
+              required
+              className="border rounded w-full py-2 px-3"
+            >
+              <option value="">Select a laboratory</option>
+              {labs.map((lab: { id: string; name: string }) => (
+                <option key={lab.id} value={lab.id}>
+                  {lab.name}
+                </option>
+              ))}
+            </select>
           </div>
+          </div>
+          
 
           {/* Section Candidat */}
           <h2 className="text-2xl font-semibold text-blue-600 mb-4 border-b pb-2">Candidate's informations</h2>
