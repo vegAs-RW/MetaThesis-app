@@ -162,7 +162,6 @@ export const getThesisById = async (req: Request, res: Response) => {
         const { id } = req.params;
         const thesis = await thesisService.getThesisById(id, { id: true, topic: true, year: true, domain: true, scientistInterest: true, keyword: true, vacancy: true, anrtNumber: true, refusedTopic: true, advisorId: true, candidateId: true, laboratoryId: true });
         if (!thesis) return APIResponse(res, { statusCode: 404, message: "Thesis not found" });
-
         APIResponse(res, {
             statusCode: 200,
             message: "Thesis found",

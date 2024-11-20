@@ -195,13 +195,62 @@ export class ThesisRepository {
      * @param {ThesisColumns} columns - The columns to select
      * @returns {Promise<Partial<Thesis | undefined>>} - A promise containing the corresponding thesis or undefined
      */
-    getThesisById(id: string, columns: ThesisColumns) {
+    async getThesisById(id: string, columns: ThesisColumns) {
         try {
-            return db.query.theses.findFirst({
+            /*return db.query.theses.findFirst({
                 where:
                     eq(theses.id, id),
-                columns
-            });
+                //columns
+            });*/
+            const query = db.select({
+                id: theses.id,
+                topic: theses.topic,
+                year: theses.year,
+                domain: theses.domain,
+                scientistInterest: theses.scientistInterest,
+                keyword: theses.keyword,
+                vacancy: theses.vacancy,
+                anrtNumber: theses.anrtNumber,
+                refusedTopic: theses.refusedTopic,
+                advisor: {
+                    id: advisors.id,
+                    department: advisors.department,
+                    research_area: advisors.research_area,
+                    ifrs: advisors.ifrs,
+                    costCenter: advisors.costCenter,
+                    firstname: users.firstname,
+                    lastname: users.lastname,
+                   
+                },
+                candidate: {
+                    id: candidates.id,
+                    firstname: candidates.firstname,
+                    lastname: candidates.lastname,
+                    birthdate: candidates.birthdate,
+                    lastDegree: candidates.lastDegree,
+                    dateLastDegree: candidates.dateLastDegree,
+                    doctoralSchool: candidates.doctoralSchool,
+                    residentPermit: candidates.residentPermit,
+                },
+                laboratory: {
+                    id: laboratories.id,
+                    name: laboratories.name,
+                    address: laboratories.address,
+                    city: laboratories.city,
+                    country: laboratories.country,
+                    means: laboratories.means,
+                    expertise: laboratories.expertise
+                }
+            })
+            .from(theses)
+            .where(eq(theses.id, id))
+            .leftJoin(advisors, eq(theses.advisorId, advisors.id))
+                .leftJoin(candidates, eq(theses.candidateId, candidates.id))
+                .leftJoin(users, eq(advisors.id, users.id))
+                .leftJoin(laboratories, eq(theses.laboratoryId, laboratories.id))
+                .leftJoin(establishments, eq(advisors.establishment, establishments.id));
+            const result = await query.execute();
+            return result[0] || null
         } catch (error) {
             console.error(error);
             throw new Error("An error occurred while fetching thesis")
