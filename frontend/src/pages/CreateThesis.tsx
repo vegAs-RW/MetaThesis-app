@@ -147,9 +147,9 @@ const CreateThesis: React.FC = () => {
                 required
               >
                 <option value="" disabled>Select an option</option>
-                <option value="Faible">Low</option>
-                <option value="Moyen">Medium</option>
-                <option value="Élevé">High</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
               </select>
             </div>
             <div className="col-span-2">

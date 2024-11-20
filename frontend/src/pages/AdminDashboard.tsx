@@ -22,6 +22,10 @@ interface Thesis {
     firstname: string;
     lastname: string;
   };
+  laboratory?: {
+    id: string;
+    name: string;
+  };
 }
 
 const AdminDashboard: React.FC = () => {
@@ -103,6 +107,9 @@ const AdminDashboard: React.FC = () => {
                 <th className="border border-gray-300 px-4 py-2 text-left">
                   Candidate
                 </th>
+                <th className="border border-gray-300 px-4 py-2 text-left">
+                  Laboratory
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -111,7 +118,7 @@ const AdminDashboard: React.FC = () => {
                   <td className="border border-gray-300 px-4 py-2">
                     {thesis.advisor
                       ? `${thesis.advisor.firstname} ${thesis.advisor.lastname}`
-                      : "Non défini"}
+                      : "N/A"}
                   </td>
                   <td className="border border-gray-300 px-4 py-2">
                     {thesis.topic}
@@ -131,6 +138,11 @@ const AdminDashboard: React.FC = () => {
                   <td className="border border-gray-300 px-4 py-2">
                     {thesis.candidate
                       ? `${thesis.candidate.firstname} ${thesis.candidate.lastname}`
+                      : "No entry"}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {thesis.laboratory
+                      ? `${thesis.laboratory.name}`
                       : "No entry"}
                   </td>
                 </tr>
