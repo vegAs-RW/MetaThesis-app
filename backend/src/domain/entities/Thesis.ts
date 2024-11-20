@@ -15,7 +15,6 @@ export interface ThesisWithRelations {
     scientistInterest: string;
     keyword: string;
     vacancy?: string | null;
-    topicValidation?: boolean;
     anrtNumber?: string | null;
     refusedTopic?: string | null;
     advisor: {

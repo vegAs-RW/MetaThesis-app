@@ -26,17 +26,6 @@ export class ThesisService {
     }
 
     /**
-     * Validates the topic of a thesis.
-     * @param {string} thesisId - The ID of the thesis to validate.
-     * @param {boolean} isValid - Indicates if the thesis topic is valid or not.
-     * @param {string} [refusedTopic] - Optional parameter to specify a refused topic.
-     * @returns {Promise<void>} - A promise that resolves once the validation is complete.
-     */
-    async validateThesisTopic(thesisId: string, isValid: boolean, refusedTopic?: string) {
-        return this.thesisRepository.validateThesisTopic(thesisId, isValid, refusedTopic);
-    }
-
-    /**
      * Updates the job vacancy associated with a thesis.
      * @param {string} thesisId - The ID of the thesis to update.
      * @param {string} vacancy - The new job vacancy information.

@@ -11,7 +11,6 @@ export const theses = pgTable('theses', {
     scientistInterest: varchar('scientistInterest', {length: 255}).notNull(),
     keyword: varchar('keyword', {length: 255}).notNull(),
     vacancy: varchar('vacancy', {length: 25}),
-    topicValidation: boolean('topicValidation'),
     anrtNumber: varchar('anrtNumber', {length:25}),
     refusedTopic: varchar('refusedTopic', {length: 25}),
     advisorId: uuid('advisorId').references(() => advisors.id).notNull(),

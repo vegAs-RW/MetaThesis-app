@@ -12,7 +12,7 @@ const thesisService = new ThesisService();
  */
 export const createThesis = async (req: Request, res: Response) => {
     try {
-        const { topic, year, domain, scientistInterest, keyword, advisorId, candidateId } = req.body;
+        const { topic, year, domain, scientistInterest, keyword, advisorId, candidateId, laboratoryId } = req.body;
         
         if (!topic.trim() || !year || !domain.trim() || !scientistInterest.trim() || !keyword.trim()|| !advisorId) {
             return APIResponse(res, {
@@ -29,7 +29,7 @@ export const createThesis = async (req: Request, res: Response) => {
             keyword,
             advisorId,
             candidateId,
-            
+            laboratoryId
         };
         const createdThesis = await thesisService.createInitialThesis(newThesis);
 
@@ -51,29 +51,6 @@ export const createThesis = async (req: Request, res: Response) => {
     }
 }
 
-/**
- * Controller to validate a thesis topic.
- * @param {Request} req - Contains the thesis ID and validation details.
- * @param {Response} res - Response to be sent back to the client.
- */
-export const validateThesisTopic = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
-        const { isValid, refusedTopic } = req.body;
-        const result = await thesisService.getThesisById(id, { id: true });
-        if (!result) return APIResponse(res, { statusCode: 404, message: "Thesis not found" });
-
-        await thesisService.validateThesisTopic(id, isValid, refusedTopic);
-
-        APIResponse(res, {
-            statusCode: 200,
-            message: "Thesis topic validated successfully",
-        });
-    } catch (error) {
-        console.error(error);
-        return APIResponse(res, { statusCode: 500, message: "An error occurred while validating thesis topic" });
-    }
-}
 
 /**
  * Controller to update the job vacancy of a thesis.
@@ -154,14 +131,15 @@ export const addAnrtNumberToThesis = async (req: Request, res: Response) => {
  */
 export const getAllTheses = async (req: Request, res: Response) => {
     try {
-        const { year, domain, keyword, advisorName} = req.query;
+        const { year, domain, keyword, advisorName, laboratoryName} = req.query;
         const filters = {
             year: year ? Number(year) : undefined,
             domain: domain ? String(domain) : undefined,
             keyword: keyword ? String(keyword) : undefined,
             advisorName: advisorName ? String(advisorName) : undefined,
+            laboratoryName: laboratoryName ? String(laboratoryName) : undefined,
         };
-        const theses = await thesisService.getAllTheses({ id: true, topic: true, year: true, domain: true, scientistInterest: true, keyword: true, vacancy: true, topicValidation: true, anrtNumber: true, refusedTopic: true, advisorId: true, candidateId: true }, filters);
+        const theses = await thesisService.getAllTheses({ id: true, topic: true, year: true, domain: true, scientistInterest: true, keyword: true, vacancy: true, anrtNumber: true, refusedTopic: true, advisorId: true, candidateId: true, laboratoryId: true}, filters);
         console.log("filtres", req.query);
         APIResponse(res, {
             statusCode: 200,
@@ -182,7 +160,7 @@ export const getAllTheses = async (req: Request, res: Response) => {
 export const getThesisById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const thesis = await thesisService.getThesisById(id, { id: true, topic: true, year: true, domain: true, scientistInterest: true, keyword: true, vacancy: true, topicValidation: true, anrtNumber: true, refusedTopic: true, advisorId: true, candidateId: true });
+        const thesis = await thesisService.getThesisById(id, { id: true, topic: true, year: true, domain: true, scientistInterest: true, keyword: true, vacancy: true, anrtNumber: true, refusedTopic: true, advisorId: true, candidateId: true, laboratoryId: true });
         if (!thesis) return APIResponse(res, { statusCode: 404, message: "Thesis not found" });
 
         APIResponse(res, {

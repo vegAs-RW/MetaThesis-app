@@ -30,7 +30,6 @@ export class ThesisRepository {
                     advisorId: thesis.advisorId,
                     candidateId: thesis.candidateId || null,
                     vacancy: thesis.vacancy || null,
-                    topicValidation: thesis.topicValidation || false,
                     anrtNumber: thesis.anrtNumber || null,
                     refusedTopic: thesis.refusedTopic || null,
                     laboratoryId: thesis.laboratoryId || null
@@ -44,28 +43,6 @@ export class ThesisRepository {
         }
     }
 
-    /**
-     * Validates the topic of a thesis
-     * @param {string} thesisId - The ID of the thesis to validate
-     * @param {boolean} isValid - Indicates if the topic is valid or not
-     * @param {string} [refusedTopic] - The refused topic if the subject is not valid
-     * @returns {Promise<{ rowsAffected: number }>} - A promise containing the result of the update
-     */
-    async validateThesisTopic(thesisId: string, isValid: boolean, refusedTopic?: string) {
-        try {
-            const result = await db.update(theses)
-                .set({
-                    topicValidation: isValid,
-                    refusedTopic: !isValid && refusedTopic ? refusedTopic : null
-                })
-                .where(eq(theses.id, thesisId))
-                .execute();
-            return result;
-        } catch (error) {
-            console.error(error);
-            throw new Error("An error occurred while validating thesis topic")
-        }
-    }
 
     /**
      * Updates the job vacancy associated with a thesis
@@ -136,7 +113,7 @@ export class ThesisRepository {
      * @param {{keyword?: string, year?: number, domain?: string, topicValidation?: boolean}} filters - The search filters
      * @returns {Promise<Thesis[]>} - A promise containing the list of theses matching the criteria
      */
-    async getAllTheses(columns: ThesisColumns, filters: {keyword?: string, year?: number, domain?: string, advisorName?: string}) {
+    async getAllTheses(columns: ThesisColumns, filters: {keyword?: string, year?: number, domain?: string, advisorName?: string, laboratoryName?: string}) {
         try {
             const query =  db.select({
                 id: theses.id,
@@ -146,7 +123,6 @@ export class ThesisRepository {
                 scientistInterest: theses.scientistInterest,
                 keyword: theses.keyword,
                 vacancy: theses.vacancy,
-                topicValidation: theses.topicValidation,
                 anrtNumber: theses.anrtNumber,
                 refusedTopic: theses.refusedTopic,
                 advisor: {
@@ -172,6 +148,7 @@ export class ThesisRepository {
                     means: laboratories.means,
                     expertise: laboratories.expertise
                 }
+                
             })
                 .from(theses)
                 .leftJoin(advisors, eq(theses.advisorId, advisors.id))
@@ -196,8 +173,11 @@ export class ThesisRepository {
                         ilike(users.lastname, `%${filters.advisorName}%`)
                     ));
                 }
+                
+                if (filters.laboratoryName) {
+                    conditions.push(ilike(laboratories.name, `%${filters.laboratoryName}%`));
+                }
                
-                // Si des conditions sont présentes, les ajouter à la requête avec AND
                 if (conditions.length > 0) {
                     query.where(and(...conditions));
                 }
@@ -239,7 +219,6 @@ export class ThesisRepository {
                     scientistInterest: theses.scientistInterest,
                     keyword: theses.keyword,
                     vacancy: theses.vacancy,
-                    topicValidation: theses.topicValidation,
                     anrtNumber: theses.anrtNumber,
                     refusedTopic: theses.refusedTopic,
                     advisorId: theses.advisorId,
