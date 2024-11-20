@@ -4,7 +4,8 @@ import api from "../services/api";
 interface EntityDetailsField {
   label: string;
   value: keyof Record<string, any>;
-  type?: "text" | "boolean";
+  type?: "text" | "boolean" | "select";
+  options?: string[];
 }
 
 interface EntityDetailsModalProps {
@@ -44,6 +45,8 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
       const entityResponse = await api.get(
         `${apiEndpoints.entity}/${entityId}`
       );
+      console.log(entityResponse.data.data);
+
       let additionalData = {};
 
       if (apiEndpoints.additional) {
@@ -58,6 +61,7 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
         ...entityResponse.data.data,
         ...additionalData,
       };
+
       setEntityData(fetchedData);
       setEditableData(fetchedData);
     } catch (err) {
@@ -121,6 +125,12 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
     }
   };
 
+  const getNestedValue = (data: Record<string, any>, path: string): any => {
+    return path.split(".").reduce((acc, key) => acc?.[key], data) || "N/A";
+  };
+
+  console.log(entityData);
+
   if (loading) {
     return <div className="text-center text-blue-600">Loading...</div>;
   }
@@ -153,26 +163,43 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
             <div key={index} className="flex justify-between">
               <label className="font-semibold">{field.label}:</label>
               {isEditing ? (
-                <input
-                  type={field.type === "boolean" ? "checkbox" : "text"}
-                  value={editableData[field.value]}
-                  onChange={(e) =>
-                    handleInputChange(
-                      field.value as string,
-                      field.type === "boolean"
-                        ? e.target.checked
-                        : e.target.value
-                    )
-                  }
-                  className="border border-gray-300 px-2 py-1 rounded-md focus:outline-none"
-                />
+                field.type === "select" ? (
+                  <select
+                    value={editableData[field.value]}
+                    onChange={(e) =>
+                      handleInputChange(field.value as string, e.target.value)
+                    }
+                    className="border border-gray-300 px-2 py-1 rounded-md focus:outline-none"
+                  >
+                    {field.options?.map((option, i) => (
+                      <option key={i} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type={field.type === "boolean" ? "checkbox" : "text"}
+                    value={editableData[field.value]}
+                    onChange={(e) =>
+                      handleInputChange(
+                        field.value as string,
+                        field.type === "boolean"
+                          ? e.target.checked
+                          : e.target.value
+                      )
+                    }
+                    className="border border-gray-300 px-2 py-1 rounded-md focus:outline-none"
+                  />
+                )
               ) : (
                 <span>
+                  
                   {field.type === "boolean"
-                    ? entityData[field.value] === true
+                    ? getNestedValue(entityData, field.value as string) === true
                       ? "Yes"
                       : "No"
-                    : entityData[field.value] || "N/A"}
+                    : getNestedValue(entityData, field.value as string)}
                 </span>
               )}
             </div>
