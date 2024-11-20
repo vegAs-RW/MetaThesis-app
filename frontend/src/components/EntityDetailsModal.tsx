@@ -133,7 +133,6 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
     return <div>No data available for {entityName}.</div>;
   }
 
-  console.log(editableData);
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center p-4">
       <div className="bg-white p-8 rounded-lg shadow-xl w-full md:w-3/4 lg:w-2/3 max-h-[80vh] overflow-y-auto">
@@ -173,8 +172,6 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
                     ? entityData[field.value] === true
                       ? "Yes"
                       : "No"
-                    : field.value === "director"
-                    ? `${entityData.firstname} ${entityData.lastname}`
                     : entityData[field.value] || "N/A"}
                 </span>
               )}
