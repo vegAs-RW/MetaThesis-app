@@ -154,4 +154,31 @@ export class LaboratoryRepository {
             throw new Error("An error occurred while fetching laboratory")
         }
     }
+
+    /**
+    * Deletes a laboratory by its ID.
+    * @param {string} id - The ID of the laboratory to delete.
+    * @returns {Promise<void>} - A promise indicating that the laboratory has been deleted.
+    * @throws {Error} - Throws an error if there's an issue during deletion.
+    */
+    deleteLaboratory(id: string): void {
+        try {
+            db.delete(laboratories).where(eq(laboratories.id, id)).execute();
+        } catch (error) {
+            console.error(error);
+            throw new Error("An error occurred while deleting laboratory")
+        }
+    }
+
 }
+
+
+
+
+ /**
+    * Deletes an establishment by its ID.
+    * @param {string} id - The ID of the establishment to delete.
+    * @returns {Promise<void>} - A promise indicating that the establishment has been deleted.
+    * @throws {Error} - Throws an error if there's an issue during deletion.
+    */
+ 

@@ -92,4 +92,13 @@ export class LaboratoryService {
     getLaboratoryByCountry(country: string, columns: LaboratoryColumns) {
         return this.laboratoryRepository.getLaboratoryByCountry(country, columns || { id: true, name: true, address: true, city: true, country: true, means: true, expertise: true });
     }
+
+    /**
+     * Deletes a laboratory by its ID.
+     * @param {string} id - The unique identifier of the laboratory to delete.
+     * @returns {Promise<void>} - A promise that resolves when the laboratory is deleted.
+     */
+    deleteLaboratory(id: string) {
+        return this.laboratoryRepository.deleteLaboratory(id);
+    }
 }

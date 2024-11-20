@@ -209,3 +209,21 @@ export const getLaboratoryByCountry = async (req: Request, res: Response) => {
         return APIResponse(res, { statusCode: 500, message: "An error occurred while fetching laboratory" });
     }
 }
+
+export const deleteLaboratory = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const laboratory = await laboratoryService.getLaboratoryById(id, { id: true });
+        if (!laboratory) return APIResponse(res, { statusCode: 404, message: "Laboratory not found" });
+
+        await laboratoryService.deleteLaboratory(id);
+
+        APIResponse(res, {
+            statusCode: 200,
+            message: "Laboratory deleted successfully",
+        });
+    } catch (error) {
+        console.error(error);
+        return APIResponse(res, { statusCode: 500, message: "An error occurred while deleting laboratory" });
+    }
+}
