@@ -5,13 +5,15 @@ const ThesisFilters: React.FC<{ onFilter: (filters: any) => void }> = ({ onFilte
   const [year, setYear] = useState("");
   const [domain, setDomain] = useState("");
   const [advisorName, setAdvisorName] = useState("");
+  const [laboratoryName, setLaboratoryName] = useState("");
 
   const handleFilter = () => {
     const filters = {
       keyword: keyword || undefined,
       year: year ? parseInt(year) : undefined,
       domain: domain || undefined,
-        advisorName: advisorName || undefined,
+      advisorName: advisorName || undefined,
+      laboratoryName: laboratoryName || undefined,
     };
     onFilter(filters);
   };
@@ -20,7 +22,8 @@ const ThesisFilters: React.FC<{ onFilter: (filters: any) => void }> = ({ onFilte
     setKeyword(""); 
     setYear(""); 
     setDomain(""); 
-    setAdvisorName(""); 
+    setAdvisorName("");
+    setLaboratoryName(""); 
     onFilter({}); 
   };
 
@@ -56,8 +59,14 @@ const ThesisFilters: React.FC<{ onFilter: (filters: any) => void }> = ({ onFilte
           onChange={(e) => setDomain(e.target.value)}
           className="border rounded px-3 py-2"
         />
-      </div>
-      <div className="mt-4 flex gap-4">
+        <input
+          type="text"
+          placeholder="Laboratory"
+          value={laboratoryName}
+          onChange={(e) => setLaboratoryName(e.target.value)}
+          className="border rounded px-3 py-2"
+        />
+        <div className="mt-4 flex gap-4">
         <button
           onClick={handleFilter}
           className="bg-blue-600 text-white py-2 px-4 rounded"
@@ -71,6 +80,8 @@ const ThesisFilters: React.FC<{ onFilter: (filters: any) => void }> = ({ onFilte
           Reset
         </button>
       </div>
+      </div>
+      
     </div>
   );
 };
