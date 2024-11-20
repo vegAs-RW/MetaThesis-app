@@ -9,5 +9,5 @@ export const directors = pgTable('directors', {
     firstname: varchar('firstname', {length:255}).notNull(),
     phoneNumber: varchar('phoneNumber', {length: 20}).notNull(),
     hdr: boolean('hdr').notNull(),
-    laboratory: uuid('laboratory').references(() => laboratories.id).notNull()
+    laboratory: uuid('laboratory').references(() => laboratories.id, { onDelete: 'cascade' }).notNull()
 })
