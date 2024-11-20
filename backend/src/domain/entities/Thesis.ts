@@ -39,5 +39,14 @@ export interface ThesisWithRelations {
         firstName: string;
         lastName: string;
     };
+    laboratory?: {
+        id: string;
+        name: string;
+        address: string;
+        city: string;
+        country: string;
+        means: string;
+        expertise: string;
+    };
 }
 
