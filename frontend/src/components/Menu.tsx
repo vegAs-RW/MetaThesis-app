@@ -2,11 +2,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store'; // Assurez-vous d'importer le bon type
+import { RootState } from '../redux/store';
 
 const Menu: React.FC = () => {
-  const token = useSelector((state: RootState) => state.auth.token); // Récupération du token
-  const userRole = useSelector((state: RootState) => state.auth.role); // Supposons que le rôle est stocké dans le state
+  const token = useSelector((state: RootState) => state.auth.token);
+  const userRole = useSelector((state: RootState) => state.auth.role);
 
   if (!token) {
     return null;
