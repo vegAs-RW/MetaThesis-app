@@ -198,6 +198,7 @@ const LaboratoryDashboard: React.FC = () => {
         </div>
       )}
       {isLabDetailsModalOpen && selectedLaboratoryId && (
+       
         <EntityDetailsModal
           entityId={selectedLaboratoryId}
           entityName="Laboratory"
@@ -206,34 +207,33 @@ const LaboratoryDashboard: React.FC = () => {
             additional: "/lab-director/laboratory",
           }}
           fields={[
-            { label: "Name", value: "name" },
-            { label: "Address", value: "address" },
-            { label: "City", value: "city" },
-            { label: "Country", value: "country" },
-            { label: "Means", value: "means", type: "select", options: ["Low", "Medium", "High"] },
-            { label: "Expertise", value: "expertise", type: "select", options: ["Low", "Medium", "High"] },
-            { label: "Director's firstname", value: "firstname", type: "text" },
-            { label: "Director's lastname", value: "lastname", type: "text" },
-            { label: "Director's Email", value: "email", type: "text" },
-            { label: "Director's Phone", value: "phoneNumber", type: "text" },
-            { label: "HDR", value: "hdr", type: "boolean" },
+            { label: "Name", value: "name", section: "Laboratory Information" },
+            { label: "Address", value: "address", section: "Laboratory Information" },
+            { label: "City", value: "city", section: "Laboratory Information" },
+            { label: "Country", value: "country", section: "Laboratory Information" },
+            { label: "Means", value: "means", type: "select", options: ["Low", "Medium", "High"], section: "Laboratory Information" },
+            { label: "Expertise", value: "expertise", type: "select", options: ["Low", "Medium", "High"], section: "Laboratory Information" },
+            { label: "Director's firstname", value: "firstname", type: "text", section: "Director Information" },
+            { label: "Director's lastname", value: "lastname", type: "text", section: "Director Information" },
+            { label: "Director's Email", value: "email", type: "text", section: "Director Information" },
+            { label: "Director's Phone", value: "phoneNumber", type: "text", section: "Director Information" },
+            { label: "HDR", value: "hdr", type: "boolean", section: "Director Information" },
           ]}
           onClose={closeLabDetailsModal}
           onEntityUpdated={refreshLaboratories}
           onDirectorUpdate={handleDirectorUpdate}
         />
+      
       )}
       {isAddLabModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full md:w-3/4 lg:w-2/3 max-h-[80vh] overflow-y-auto">
+       
             <AddEntityModal
               onClose={closeAddLabModal}
               onSubmit={handleAddLaboratory}
               fields={laboratoryFields}
               entityName="Laboratory"
             />
-          </div>
-        </div>
+          
       )}
     </div>
   );
