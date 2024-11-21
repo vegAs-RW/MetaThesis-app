@@ -21,7 +21,7 @@ const LoginPage: React.FC = () => {
       if (response.data.message === 'Login successful') {
         dispatch(login({ token, role }));
         if (role === 'admin') {
-          navigate('/dashboard/admin');
+          navigate('/all-theses');
         } else if (role === 'advisor') {
           navigate('/dashboard/advisor');
         } else {
