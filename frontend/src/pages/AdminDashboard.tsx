@@ -138,7 +138,7 @@ const AdminDashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-300 p-8">
       <h1 className="text-3xl font-bold text-blue-600 mb-6 text-center">
-        All Theses
+        Theses Dashboard
       </h1>
 
       <ThesisFilters onFilter={handleFilterChange} />

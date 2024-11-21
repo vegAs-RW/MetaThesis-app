@@ -20,7 +20,7 @@ interface EntityDetailsModalProps {
   onClose: () => void;
   onEntityUpdated: () => Promise<void>;
   onDirectorUpdate?: (data: Record<string, any>) => Promise<void>;
-  customActions?: () => JSX.Element
+  customActions?: () => JSX.Element;
 }
 
 const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
@@ -31,9 +31,11 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
   onClose,
   onEntityUpdated,
   onDirectorUpdate,
-  customActions
+  customActions,
 }) => {
-  const [entityData, setEntityData] = useState<Record<string, any> | null>(null);
+  const [entityData, setEntityData] = useState<Record<string, any> | null>(
+    null
+  );
   const [editableData, setEditableData] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
@@ -43,7 +45,9 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
     setLoading(true);
     setError("");
     try {
-      const entityResponse = await api.get(`${apiEndpoints.entity}/${entityId}`);
+      const entityResponse = await api.get(
+        `${apiEndpoints.entity}/${entityId}`
+      );
 
       let additionalData = {};
       if (apiEndpoints.additional) {
@@ -149,7 +153,6 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
       <div className="relative bg-white rounded-lg shadow-2xl overflow-hidden max-w-3xl w-full max-h-[90vh] overflow-y-auto transform transition-transform duration-500">
-        {/* En-tête de la modale */}
         <div className="bg-gradient-to-r from-blue-500 to-blue-700 text-white py-4 px-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold">{entityName} Details</h1>
           <button
@@ -161,7 +164,6 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
           </button>
         </div>
 
-        {/* Contenu de la modale */}
         <div className="p-6">
           {error && <p className="text-center text-red-500">{error}</p>}
 
@@ -177,7 +179,7 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
                       <label className="block text-gray-600 mb-2 font-semibold">
                         {field.label}:
                       </label>
-                      
+
                       {isEditing ? (
                         field.type === "select" ? (
                           <select
@@ -195,7 +197,9 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
                           </select>
                         ) : (
                           <input
-                            type={field.type === "boolean" ? "checkbox" : "text"}
+                            type={
+                              field.type === "boolean" ? "checkbox" : "text"
+                            }
                             value={editableData[field.value]}
                             onChange={(e) =>
                               handleInputChange(
@@ -261,7 +265,6 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
                   </button>
                 </>
               )}
-             
             </div>
           </form>
         </div>
@@ -271,4 +274,3 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
 };
 
 export default EntityDetailsModal;
-
