@@ -239,37 +239,45 @@ const AdminDashboard: React.FC = () => {
             entity: "/thesis",
           }}
           fields={[
-            { label: "Topic", value: "topic" },
-            { label: "Year", value: "year" },
-            { label: "Domain", value: "domain" },
-            { label: "Scientist Interest", value: "scientistInterest" },
-            { label: "Keyword", value: "keyword" },
-            { label: "advisor's firtname", value: "advisor.firstname" },
-            { label: "Advisor's Lastname", value: "advisor.lastname" },
-            { label: "Advisor's Cost Center", value: "advisor.costCenter" },
-            { label: "Advisor's IFRS", value: "advisor.ifrs" },
-            { label: "Advisor's Department", value: "advisor.department" },
-            {label: "Advisor's research area", value: "advisor.research_area"},
+            { label: "Topic", value: "topic", section: "Thesis Information" },
+            { label: "Year", value: "year", section: "Thesis Information" },
+            { label: "Domain", value: "domain", section: "Thesis Information" },
+            { label: "Scientist Interest", value: "scientistInterest", section: "Thesis Information" },
+            { label: "Keyword", value: "keyword", section: "Thesis Information" },
+            { label: "advisor's firtname", value: "advisor.firstname", section: "Advisor Information" },
+            { label: "Advisor's Lastname", value: "advisor.lastname", section: "Advisor Information" },
+            { label: "Advisor's Cost Center", value: "advisor.costCenter", section: "Advisor Information" },
+            { label: "Advisor's IFRS", value: "advisor.ifrs", section: "Advisor Information" },
+            { label: "Advisor's Department", value: "advisor.department", section: "Advisor Information" },
+            {label: "Advisor's research area", value: "advisor.research_area", section: "Advisor Information" },
             /*{ label: "Advisor's Establishment Name", value: "advisor.establishment.name" },
             { label: "Advisor's Establishment Address", value: "advisor.establishment.address" },
             { label: "Advisor's Establishment City", value: "advisor.establishment.city" },
             { label: "Advisor's Establishment SIRET", value: "advisor.establishment.siret" },
             { label: "Advisor's Establishment Zipcode", value: "advisor.establishment.zipcode" },
             { label: "Advisor's Establishment Telephone", value: "advisor.establishment.telephone" },*/
-            { label: "Candidate's Firstname", value: "candidate.firstname" },
-            { label: "Candidate's Lastname", value: "candidate.lastname" },
-            { label: "Candidate's Birthdate", value: "candidate.birthdate" },
-            { label: "Candidate's Last Degree", value: "candidate.lastDegree" },
-            { label: "Candidate's Last Degree Date", value: "candidate.dateLastDegree" },
-            { label: "Laboratory Name", value: "laboratory.name" },
-            { label: "Laboratory Address", value: "laboratory.address" },
-            { label: "Laboratory City", value: "laboratory.city" },
-            { label: "Laboratory Country", value: "laboratory.country" },
-            { label: "Laboratory Means", value: "laboratory.means" },
-            { label: "Laboratory Expertise", value: "laboratory.expertise" },
+            { label: "Candidate's Firstname", value: "candidate.firstname", section: "Candidate Information" },
+            { label: "Candidate's Lastname", value: "candidate.lastname", section: "Candidate Information" },
+            { label: "Candidate's Birthdate", value: "candidate.birthdate", section: "Candidate Information" },
+            { label: "Candidate's Last Degree", value: "candidate.lastDegree", section: "Candidate Information" },
+            { label: "Candidate's Last Degree Date", value: "candidate.dateLastDegree", section: "Candidate Information" },
+            { label: "Laboratory Name", value: "laboratory.name", section: "Laboratory Information" },
+            { label: "Laboratory Address", value: "laboratory.address", section: "Laboratory Information" },
+            { label: "Laboratory City", value: "laboratory.city", section: "Laboratory Information" },
+            { label: "Laboratory Country", value: "laboratory.country", section: "Laboratory Information" },
+            { label: "Laboratory Means", value: "laboratory.means", section: "Laboratory Information" },
+            { label: "Laboratory Expertise", value: "laboratory.expertise", section: "Laboratory Information" },
           ]}
           onClose={handleCloseModal}
           onEntityUpdated={handleEntityUpdated}
+          customActions={() => (
+            <button
+            onClick={exportToExcel}
+            className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
+          >
+            Export to Excel
+          </button>
+          )}
         />
       )}
     </div>
