@@ -3,9 +3,10 @@ import api from "../services/api";
 
 interface EntityDetailsField {
   label: string;
-  value: keyof Record<string, any>;
+  value: string;
   type?: "text" | "boolean" | "select";
   options?: string[];
+  section?: string;
 }
 
 interface EntityDetailsModalProps {
@@ -19,6 +20,7 @@ interface EntityDetailsModalProps {
   onClose: () => void;
   onEntityUpdated: () => Promise<void>;
   onDirectorUpdate?: (data: Record<string, any>) => Promise<void>;
+  customActions?: () => JSX.Element
 }
 
 const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
@@ -29,10 +31,9 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
   onClose,
   onEntityUpdated,
   onDirectorUpdate,
+  customActions
 }) => {
-  const [entityData, setEntityData] = useState<Record<string, any> | null>(
-    null
-  );
+  const [entityData, setEntityData] = useState<Record<string, any> | null>(null);
   const [editableData, setEditableData] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
@@ -42,18 +43,13 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
     setLoading(true);
     setError("");
     try {
-      const entityResponse = await api.get(
-        `${apiEndpoints.entity}/${entityId}`
-      );
-      console.log(entityResponse.data.data);
+      const entityResponse = await api.get(`${apiEndpoints.entity}/${entityId}`);
 
       let additionalData = {};
-
       if (apiEndpoints.additional) {
         const additionalResponse = await api.get(
           `${apiEndpoints.additional}/${entityId}`
         );
-
         additionalData = additionalResponse.data.data;
       }
 
@@ -93,14 +89,14 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
 
       if (onDirectorUpdate) {
         const directorData = {
-          id: editableData.id, // ID du directeur
+          id: editableData.id,
           firstname: editableData.firstname,
           lastname: editableData.lastname,
           email: editableData.email,
           phoneNumber: editableData.phoneNumber,
           hdr: editableData.hdr,
         };
-        await onDirectorUpdate(directorData); // Appel de la méthode parent
+        await onDirectorUpdate(directorData);
       }
     } catch (err) {
       console.error("Error updating entity:", err);
@@ -129,7 +125,14 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
     return path.split(".").reduce((acc, key) => acc?.[key], data) || "N/A";
   };
 
-  console.log(entityData);
+  const groupedFields = fields.reduce((acc, field) => {
+    const section = field.section || "General Information";
+    if (!acc[section]) {
+      acc[section] = [];
+    }
+    acc[section].push(field);
+    return acc;
+  }, {} as Record<string, EntityDetailsField[]>);
 
   if (loading) {
     return <div className="text-center text-blue-600">Loading...</div>;
@@ -144,99 +147,123 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center p-4">
-      <div className="bg-white p-8 rounded-lg shadow-xl w-full md:w-3/4 lg:w-2/3 max-h-[80vh] overflow-y-auto">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-4xl text-gray-600 hover:text-gray-800 focus:outline-none"
-          aria-label="Close"
-        >
-          &times;
-        </button>
-
-        <h1 className="text-3xl font-semibold text-blue-600 mb-6 text-center">
-          {entityName} Details
-        </h1>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {fields.map((field, index) => (
-            <div key={index} className="flex justify-between">
-              <label className="font-semibold">{field.label}:</label>
-              {isEditing ? (
-                field.type === "select" ? (
-                  <select
-                    value={editableData[field.value]}
-                    onChange={(e) =>
-                      handleInputChange(field.value as string, e.target.value)
-                    }
-                    className="border border-gray-300 px-2 py-1 rounded-md focus:outline-none"
-                  >
-                    {field.options?.map((option, i) => (
-                      <option key={i} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <input
-                    type={field.type === "boolean" ? "checkbox" : "text"}
-                    value={editableData[field.value]}
-                    onChange={(e) =>
-                      handleInputChange(
-                        field.value as string,
-                        field.type === "boolean"
-                          ? e.target.checked
-                          : e.target.value
-                      )
-                    }
-                    className="border border-gray-300 px-2 py-1 rounded-md focus:outline-none"
-                  />
-                )
-              ) : (
-                <span>
-                  
-                  {field.type === "boolean"
-                    ? getNestedValue(entityData, field.value as string) === true
-                      ? "Yes"
-                      : "No"
-                    : getNestedValue(entityData, field.value as string)}
-                </span>
-              )}
-            </div>
-          ))}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+      <div className="relative bg-white rounded-lg shadow-2xl overflow-hidden max-w-3xl w-full max-h-[90vh] overflow-y-auto transform transition-transform duration-500">
+        {/* En-tête de la modale */}
+        <div className="bg-gradient-to-r from-blue-500 to-blue-700 text-white py-4 px-6 flex items-center justify-between">
+          <h1 className="text-2xl font-bold">{entityName} Details</h1>
+          <button
+            onClick={onClose}
+            className="text-white text-3xl hover:text-gray-200 focus:outline-none transition duration-300"
+            aria-label="Close"
+          >
+            &times;
+          </button>
         </div>
 
-        <div className="flex justify-end mt-8">
-          {isEditing ? (
-            <>
-              <button
-                onClick={handleSave}
-                className="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
-              >
-                Save
-              </button>
-              <button
-                onClick={() => setIsEditing(false)}
-                className="px-6 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500 focus:outline-none ml-4"
-              >
-                Cancel
-              </button>
-            </>
-          ) : (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="px-6 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 focus:outline-none"
-            >
-              Edit
-            </button>
-          )}
+        {/* Contenu de la modale */}
+        <div className="p-6">
+          {error && <p className="text-center text-red-500">{error}</p>}
 
-          <button
-            onClick={handleDeleteClick}
-            className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none"
-          >
-            Delete
-          </button>
+          <form>
+            {Object.entries(groupedFields).map(([section, sectionFields]) => (
+              <div key={section} className="mb-6">
+                <h2 className="text-xl font-semibold text-gray-700 mb-4">
+                  {section}
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {sectionFields.map((field, index) => (
+                    <div key={index} className="relative group">
+                      <label className="block text-gray-600 mb-2 font-semibold">
+                        {field.label}:
+                      </label>
+                      
+                      {isEditing ? (
+                        field.type === "select" ? (
+                          <select
+                            value={editableData[field.value]}
+                            onChange={(e) =>
+                              handleInputChange(field.value, e.target.value)
+                            }
+                            className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-300"
+                          >
+                            {field.options?.map((option, i) => (
+                              <option key={i} value={option}>
+                                {option}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            type={field.type === "boolean" ? "checkbox" : "text"}
+                            value={editableData[field.value]}
+                            onChange={(e) =>
+                              handleInputChange(
+                                field.value,
+                                field.type === "boolean"
+                                  ? e.target.checked
+                                  : e.target.value
+                              )
+                            }
+                            className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-300"
+                          />
+                        )
+                      ) : (
+                        <span className="block text-gray-700">
+                          {field.type === "boolean"
+                            ? getNestedValue(entityData, field.value) === true
+                              ? "Yes"
+                              : "No"
+                            : getNestedValue(entityData, field.value)}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            <div className="flex justify-end mt-6 space-x-4">
+              {customActions ? (
+                customActions()
+              ) : isEditing ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleSave}
+                    className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-300"
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                    className="px-6 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500 transition duration-300"
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(true)}
+                    className="px-6 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition duration-300"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDeleteClick}
+                    className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300"
+                  >
+                    Delete
+                  </button>
+                </>
+              )}
+             
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -244,3 +271,4 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
 };
 
 export default EntityDetailsModal;
+
