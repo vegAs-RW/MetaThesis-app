@@ -69,8 +69,8 @@ const AddEntityModal: React.FC<AddEntityModalProps> = ({
   }, {} as Record<string, typeof fields>);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-300 p-8 relative">
-      <div className="relative bg-white rounded-lg shadow-lg p-6 max-w-3xl w-full mx-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+      <div className="relative bg-white rounded-lg shadow-lg p-6 max-w-3xl w-full max-h-[90vh] overflow-y-auto">
         <button
           className="absolute top-4 right-4 text-3xl text-gray-600 hover:text-gray-800 focus:outline-none"
           onClick={onClose}
