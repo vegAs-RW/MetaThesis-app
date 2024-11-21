@@ -9,6 +9,7 @@ import Layout from './components/Layout'
 import AdminDashboard from './pages/AdminDashboard'
 import LaboratoryList from './pages/LaboratoriesDashboard'
 import EstablishmentDashboard from './pages/EstablishmentDashboard'
+import DataAnalysis from './pages/DataAnalysis'
 
 const App: React.FC = () => {
   return (
@@ -24,6 +25,7 @@ const App: React.FC = () => {
           <Route path="/all-theses" element={<AdminDashboard />} />
           <Route path="/all-laboratories" element={<LaboratoryList />} />
           <Route path="/all-establishments" element={<EstablishmentDashboard />} />
+          <Route path="/data-analysis" element={<DataAnalysis />} />
         </Routes>
         </Layout>
     </Router>
