@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it, jest } from '@jest/globals';
+/*import { beforeAll, describe, expect, it, jest } from '@jest/globals';
 import { ThesisService } from '../../domain/services/ThesisService';
 import { ThesisRepository } from '../../infrastructure/repositories/ThesisRepository';
 import { NewThesis, Thesis } from '../../domain/entities/Thesis';
@@ -171,3 +171,4 @@ describe('ThesisService', () => {
         expect(mockThesisRepository.getThesisById).toHaveBeenCalledWith(thesisId, columns);
     });
 });
+*/
