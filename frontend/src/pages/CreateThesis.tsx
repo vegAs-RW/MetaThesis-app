@@ -37,7 +37,10 @@ const CreateThesis: React.FC = () => {
 
   const fetchLaboratories = async () => {
     try {
-      const response = await api.get('/laboratory');
+      const response = await api.get('/laboratory', {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+      );
       setLabs(response.data.data);
     } catch (error) {
       console.error('Erreur lors de la récupération des laboratoires:', error);

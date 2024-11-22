@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../services/api";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 interface EntityDetailsField {
   label: string;
@@ -33,6 +35,7 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
   onDirectorUpdate,
   customActions,
 }) => {
+  const token = useSelector((state: RootState) => state.auth.token);
   const [entityData, setEntityData] = useState<Record<string, any> | null>(
     null
   );
@@ -45,14 +48,21 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
     setLoading(true);
     setError("");
     try {
-      const entityResponse = await api.get(
-        `${apiEndpoints.entity}/${entityId}`
-      );
+      const entityResponse = await api.get(`${apiEndpoints.entity}/${entityId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       let additionalData = {};
       if (apiEndpoints.additional) {
         const additionalResponse = await api.get(
-          `${apiEndpoints.additional}/${entityId}`
+          `${apiEndpoints.additional}/${entityId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Ajouter le Bearer Token ici aussi
+            },
+          }
         );
         additionalData = additionalResponse.data.data;
       }
@@ -85,7 +95,11 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
 
   const handleSave = async () => {
     try {
-      await api.put(`${apiEndpoints.entity}/${entityId}`, editableData);
+      await api.put(`${apiEndpoints.entity}/${entityId}`, editableData,{
+        headers: {
+          Authorization: `Bearer ${token}`, // Ajouter le Bearer Token pour la mise à jour
+        },
+      });
       setEntityData(editableData);
       setIsEditing(false);
       onEntityUpdated();
@@ -114,7 +128,11 @@ const EntityDetailsModal: React.FC<EntityDetailsModalProps> = ({
     );
     if (confirmDelete) {
       try {
-        await api.delete(`${apiEndpoints.entity}/${entityId}`);
+        await api.delete(`${apiEndpoints.entity}/${entityId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Ajouter le Bearer Token pour la suppression
+          },
+        });
         onEntityUpdated();
         onClose();
         alert(`${entityName} deleted successfully.`);

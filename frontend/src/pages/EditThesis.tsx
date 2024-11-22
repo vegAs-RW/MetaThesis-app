@@ -56,7 +56,7 @@ const EditThesis: React.FC = () => {
       await api.put(`/thesis/${thesisId}`, thesis, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      navigate("/dashboard/advisor"); // Redirige vers le tableau de bord après la mise à jour
+      navigate("/dashboard/advisor");
     } catch (error) {
       console.error("Erreur lors de la mise à jour de la thèse :", error);
     }
@@ -66,7 +66,6 @@ const EditThesis: React.FC = () => {
     e.preventDefault();
     console.log("Données du candidat :", candidateData);
     try {
-      // Créer le candidat
       const candidateResponse = await api.post("/candidate", candidateData, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -76,7 +75,6 @@ const EditThesis: React.FC = () => {
       );
       const candidateId = candidateResponse.data.data.candidate;
 
-      // Assigner le candidat à la thèse
       await api.put(
         `/thesis/${thesisId}/assign-candidate`,
         { candidateId },
@@ -130,7 +128,7 @@ const EditThesis: React.FC = () => {
                   required
                 />
               </div>
-              {/* Ajoutez d'autres champs d'édition si nécessaire */}
+              
               <button
                 type="submit"
                 className="bg-blue-600 text-white py-2 px-4 rounded"
@@ -144,7 +142,6 @@ const EditThesis: React.FC = () => {
             </p>
           )}
 
-          {/* Formulaire d'ajout de candidat */}
           {editMode && (
             <div className="mt-8">
               <h3 className="text-lg font-semibold mb-4">
