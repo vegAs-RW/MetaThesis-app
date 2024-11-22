@@ -14,16 +14,16 @@ const router = express.Router();
 
 router.use('/auth', authRoutes);
 
-router.use('/user', /*isAuth,*/ userRoutes);
+router.use('/user', isAuth, userRoutes);
 
-router.use('/laboratory', /*isAuth,*/ laboratoryRoutes);
+router.use('/laboratory', isAuth, laboratoryRoutes);
 
-router.use('/establishment', /*isAuth,*/ establishmentRoutes);
+router.use('/establishment', isAuth, establishmentRoutes);
 
-router.use('/lab-director', /*isAuth,*/ labDirectorRoutes);
+router.use('/lab-director', isAuth, labDirectorRoutes);
 
-router.use('/candidate', /*isAuth,*/ candidateRoutes);
+router.use('/candidate', isAuth, candidateRoutes);
 
-router.use('/thesis', /*isAuth,*/ thesisRoutes);
+router.use('/thesis', isAuth, thesisRoutes);
 
 export default router;
