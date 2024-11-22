@@ -244,7 +244,7 @@ const AdminDashboard: React.FC = () => {
             { label: "Domain", value: "domain", section: "Thesis Information" },
             { label: "Scientist Interest", value: "scientistInterest", section: "Thesis Information" },
             { label: "Keyword", value: "keyword", section: "Thesis Information" },
-            { label: "advisor's firtname", value: "advisor.firstname", section: "Advisor Information" },
+            { label: "advisor's firstname", value: "advisor.firstname", section: "Advisor Information" },
             { label: "Advisor's Lastname", value: "advisor.lastname", section: "Advisor Information" },
             { label: "Advisor's Cost Center", value: "advisor.costCenter", section: "Advisor Information" },
             { label: "Advisor's IFRS", value: "advisor.ifrs", section: "Advisor Information" },

@@ -38,7 +38,7 @@ const LoginPage: React.FC = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-200 to-blue-500">
       <div className="w-full max-w-lg px-8 py-6 bg-white rounded-lg shadow-lg transform transition-all duration-500 hover:shadow-2xl md:px-10 md:py-8 lg:max-w-md">
-        <h1 className="text-3xl font-bold text-center text-blue-600 mb-8">Connexion</h1>
+        <h1 className="text-3xl font-bold text-center text-blue-600 mb-8">Sign in</h1>
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
             <label className="block text-md font-semibold text-gray-600">Email :</label>
@@ -51,7 +51,7 @@ const LoginPage: React.FC = () => {
             />
           </div>
           <div>
-            <label className="block text-md font-semibold text-gray-600">Mot de passe :</label>
+            <label className="block text-md font-semibold text-gray-600">Password :</label>
             <input
               type="password"
               value={password}
@@ -65,7 +65,7 @@ const LoginPage: React.FC = () => {
             type="submit"
             className="w-full py-3 mt-4 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition duration-300 shadow-lg focus:ring-4 focus:ring-blue-400 focus:outline-none"
           >
-            Se connecter
+            Sign in
           </button>
         </form>
       </div>
